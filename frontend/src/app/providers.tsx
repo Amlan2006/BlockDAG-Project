@@ -6,7 +6,7 @@ import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { blockdagPrimordial } from '../chains';
 
-const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '';
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'a1df65d9fe53b0a3d9ddc9d1cf61b32c';
 
 const metadata = {
   name: 'BlockDAG Starter Kit',
