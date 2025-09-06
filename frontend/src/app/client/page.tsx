@@ -8,6 +8,7 @@ import {
   useProject, 
   useProjectApplications,
   useFreelanceEscrowWrite,
+  useMilestoneCount,
   useIsClient,
   formatProjectStatus 
 } from '@/utils/contracts';
@@ -69,6 +70,7 @@ export default function ClientDashboard() {
   const ProjectCard = ({ projectId }: { projectId: number }) => {
     const { data: projectData, isLoading } = useProject(projectId);
     const { data: applications, isLoading: isLoadingApps, error: appsError } = useProjectApplications(projectId);
+    const { data: milestoneCount } = useMilestoneCount(projectId);
     
     // Debug logging
     console.log(`Project ${projectId}:`, {
@@ -143,9 +145,9 @@ export default function ClientDashboard() {
             <span className="text-gray-300">Applications:</span>
             <span className="text-white">{applicationCount}</span>
           </div>
-          {/* Debug info */}
-          <div className="text-xs text-gray-500">
-            Debug: hasFreelancer={hasFreelancer.toString()}, hasApps={hasApplications.toString()}
+          <div className="flex justify-between">
+            <span className="text-gray-300">Milestones:</span>
+            <span className="text-white">{milestoneCount?.toString() || '0'}</span>
           </div>
         </div>
 
@@ -157,7 +159,7 @@ export default function ClientDashboard() {
             View Details
           </button>
           
-          {/* Always show the button for debugging, but indicate why it might be disabled */}
+          {/* Applications Button */}
           <button 
             onClick={() => {
               console.log('View Applications clicked for project:', projectId);
@@ -183,6 +185,16 @@ export default function ClientDashboard() {
                 : 'No Applications'
             }
           </button>
+          
+          {/* Milestones Button - Only show if freelancer is assigned */}
+          {hasFreelancer && (
+            <button 
+              onClick={() => router.push(`/client-milestones/${projectId}`)}
+              className="flex-1 bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700"
+            >
+              Manage Milestones
+            </button>
+          )}
         </div>
       </div>
     );

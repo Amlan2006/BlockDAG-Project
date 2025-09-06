@@ -7,7 +7,8 @@ import {
   useAvailableProjects, 
   useProject, 
   useFreelanceEscrowWrite,
-  useFreelancerProjects, 
+  useFreelancerProjects,
+  useMilestoneCount, 
   useIsFreelancer,
   formatProjectStatus 
 } from '../../utils/contracts';
@@ -113,6 +114,7 @@ export default function FreelancerDashboard() {
   // Component to display assigned project
   const AssignedProjectCard = ({ projectId }: { projectId: number }) => {
     const { data: projectData, isLoading } = useProject(projectId);
+    const { data: milestoneCount } = useMilestoneCount(projectId);
     
     if (isLoading || !projectData) {
       return (
@@ -176,18 +178,24 @@ export default function FreelancerDashboard() {
               }`}>{projectStatus}</span>
             </div>
             <div>
-              <span className="text-gray-400">Platform Fee:</span>
-              <span className="text-white ml-2">{formatEther(platformFee)} ETH</span>
+              <span className="text-gray-400">Milestones:</span>
+              <span className="text-white ml-2">{milestoneCount?.toString() || '0'}</span>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex gap-3">
-          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex-1">
+          <button 
+            onClick={() => router.push(`/milestones/${projectId}`)}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex-1"
+          >
             View Milestones
           </button>
-          <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+          <button 
+            onClick={() => router.push(`/milestones/${projectId}`)}
+            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+          >
             Submit Work
           </button>
           <button className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">

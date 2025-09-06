@@ -138,6 +138,30 @@ export function useProjectApplications(projectId: number) {
   });
 }
 
+// Hook for reading milestone count
+export function useMilestoneCount(projectId: number) {
+  const { freelanceEscrow } = useContractAddress();
+  
+  return useReadContract({
+    address: freelanceEscrow as `0x${string}`,
+    abi: FreelanceEscrowABI,
+    functionName: 'getMilestoneCount',
+    args: [BigInt(projectId)],
+  });
+}
+
+// Hook for reading milestone details
+export function useMilestone(projectId: number, milestoneIndex: number) {
+  const { freelanceEscrow } = useContractAddress();
+  
+  return useReadContract({
+    address: freelanceEscrow as `0x${string}`,
+    abi: FreelanceEscrowABI,
+    functionName: 'getMilestone',
+    args: [BigInt(projectId), BigInt(milestoneIndex)],
+  });
+}
+
 // Hook for writing user registry functions
 export function useUserRegistryWrite() {
   const { userRegistry } = useContractAddress();
