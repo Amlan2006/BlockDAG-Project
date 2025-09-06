@@ -22,4 +22,29 @@ export const blockdagPrimordial = {
       url: 'https://primordial.bdagscan.com',
     },
   },
+} as const satisfies Chain;
+
+// Anvil local network for testing
+export const anvilLocal = {
+  id: 31337,
+  name: 'Anvil Local',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ethereum',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: {
+      http: ['http://127.0.0.1:8545'],
+    },
+    public: {
+      http: ['http://127.0.0.1:8545'],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'Local Explorer',
+      url: 'http://localhost:8545',
+    },
+  },
 } as const satisfies Chain; 
