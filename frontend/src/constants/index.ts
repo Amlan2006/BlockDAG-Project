@@ -1,11 +1,16 @@
-import { FreelanceEscrowABI } from "./abi";
+import { FreelanceEscrowABI, UserRegistryABI } from "./abi";
 
 // Contract addresses for different networks
 export const CONTRACT_ADDRESSES = {
   // Anvil local network (Chain ID: 31337)
   31337: {
-    FreelanceEscrow: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    UserRegistry: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    FreelanceEscrow: "0x2E983A1Ba5e8b38AAAeC4B440B9dDcFBf72E15d1",
+    UserRegistry: "0x663F3ad617193148711d28f5334eE4Ed07016602"
+  },
+  // BlockDAG Testnet (Chain ID: 1043)
+  1043: {
+    FreelanceEscrow: "0x96fe78279FAf7A13aa28Dbf95372C6211DfE5d4a",
+    UserRegistry: "0xeCE0f83Ff830FD139665349BA391e2ADE19DcED6"
   },
   // Add other networks as needed
   // 1: { // Ethereum Mainnet
@@ -14,11 +19,11 @@ export const CONTRACT_ADDRESSES = {
   // }
 } as const;
 
-// Default to Anvil network for testing
-export const CURRENT_NETWORK = 31337;
+// Default to BlockDAG testnet
+export const CURRENT_NETWORK = 1043;
 export const contractAddress = CONTRACT_ADDRESSES[CURRENT_NETWORK].FreelanceEscrow;
 export const userRegistryAddress = CONTRACT_ADDRESSES[CURRENT_NETWORK].UserRegistry;
 
 // Export ABI for compatibility
 export const abi = FreelanceEscrowABI;
-export { FreelanceEscrowABI };
+export { FreelanceEscrowABI, UserRegistryABI };

@@ -13,7 +13,7 @@ if (!projectId) throw new Error("Project ID is not defined");
 const metadata = {
   name: "BlockDAG Freelance Escrow",
   description: "Decentralized freelance platform on BlockDAG",
-  url: "https://web3modal.com", // origin must match your domain & subdomain
+  url: "http://localhost:3000", // Must match your local development URL
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 

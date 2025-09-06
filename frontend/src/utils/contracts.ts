@@ -1,5 +1,5 @@
 import { useReadContract, useWriteContract, useAccount } from 'wagmi';
-import { FreelanceEscrowABI, CONTRACT_ADDRESSES } from '../constants';
+import { FreelanceEscrowABI, UserRegistryABI, CONTRACT_ADDRESSES } from '../constants';
 
 // Hook to get the correct contract address based on current network
 export function useContractAddress() {
@@ -36,6 +36,96 @@ export function useProject(projectId: number) {
   });
 }
 
+// Hook for reading user profile
+export function useUserProfile(address?: string) {
+  const { userRegistry } = useContractAddress();
+  const { address: connectedAddress } = useAccount();
+  const targetAddress = address || connectedAddress;
+  
+  return useReadContract({
+    address: userRegistry as `0x${string}`,
+    abi: UserRegistryABI,
+    functionName: 'getUserProfile',
+    args: targetAddress ? [targetAddress as `0x${string}`] : undefined,
+    query: { enabled: !!targetAddress }
+  });
+}
+
+// Hook for checking if user is registered
+export function useIsRegistered(address?: string) {
+  const { userRegistry } = useContractAddress();
+  const { address: connectedAddress } = useAccount();
+  const targetAddress = address || connectedAddress;
+  
+  return useReadContract({
+    address: userRegistry as `0x${string}`,
+    abi: UserRegistryABI,
+    functionName: 'isRegistered',
+    args: targetAddress ? [targetAddress as `0x${string}`] : undefined,
+    query: { enabled: !!targetAddress }
+  });
+}
+
+// Hook for checking if user is client
+export function useIsClient(address?: string) {
+  const { userRegistry } = useContractAddress();
+  const { address: connectedAddress } = useAccount();
+  const targetAddress = address || connectedAddress;
+  
+  return useReadContract({
+    address: userRegistry as `0x${string}`,
+    abi: UserRegistryABI,
+    functionName: 'isClient',
+    args: targetAddress ? [targetAddress as `0x${string}`] : undefined,
+    query: { enabled: !!targetAddress }
+  });
+}
+
+// Hook for checking if user is freelancer
+export function useIsFreelancer(address?: string) {
+  const { userRegistry } = useContractAddress();
+  const { address: connectedAddress } = useAccount();
+  const targetAddress = address || connectedAddress;
+  
+  return useReadContract({
+    address: userRegistry as `0x${string}`,
+    abi: UserRegistryABI,
+    functionName: 'isFreelancer',
+    args: targetAddress ? [targetAddress as `0x${string}`] : undefined,
+    query: { enabled: !!targetAddress }
+  });
+}
+
+// Hook for reading client projects
+export function useClientProjects(address?: string) {
+  const { freelanceEscrow } = useContractAddress();
+  const { address: connectedAddress } = useAccount();
+  const targetAddress = address || connectedAddress;
+  
+  return useReadContract({
+    address: freelanceEscrow as `0x${string}`,
+    abi: FreelanceEscrowABI,
+    functionName: 'getClientProjects',
+    args: targetAddress ? [targetAddress as `0x${string}`] : undefined,
+    query: { enabled: !!targetAddress }
+  });
+}
+
+// Hook for reading freelancer projects
+export function useFreelancerProjects(address?: string) {
+  const { freelanceEscrow } = useContractAddress();
+  const { address: connectedAddress } = useAccount();
+  const targetAddress = address || connectedAddress;
+  
+  return useReadContract({
+    address: freelanceEscrow as `0x${string}`,
+    abi: FreelanceEscrowABI,
+    functionName: 'getFreelancerProjects',
+    args: targetAddress ? [targetAddress as `0x${string}`] : undefined,
+    query: { enabled: !!targetAddress }
+  });
+}
+
 // Hook for reading project applications
 export function useProjectApplications(projectId: number) {
   const { freelanceEscrow } = useContractAddress();
@@ -48,7 +138,35 @@ export function useProjectApplications(projectId: number) {
   });
 }
 
-// Hook for writing contract functions
+// Hook for writing user registry functions
+export function useUserRegistryWrite() {
+  const { userRegistry } = useContractAddress();
+  const { writeContract, ...rest } = useWriteContract();
+  
+  const registerUser = (
+    userType: number,
+    name: string,
+    email: string,
+    bio: string,
+    skills: string[],
+    profileImageHash: string
+  ) => {
+    return writeContract({
+      address: userRegistry as `0x${string}`,
+      abi: UserRegistryABI,
+      functionName: 'registerUser',
+      args: [userType, name, email, bio, skills, profileImageHash],
+    });
+  };
+  
+  return {
+    writeContract,
+    registerUser,
+    ...rest,
+  };
+}
+
+// Hook for writing FreelanceEscrow functions
 export function useFreelanceEscrowWrite() {
   const { freelanceEscrow } = useContractAddress();
   const { writeContract, ...rest } = useWriteContract();
@@ -145,4 +263,22 @@ export function formatMilestoneStatus(status: number): string {
     4: 'Cancelled'
   };
   return statusMap[status as keyof typeof statusMap] || 'Unknown';
+}
+
+export function formatUserType(userType: number): string {
+  const userTypeMap = {
+    1: 'Client',
+    2: 'Freelancer',
+    3: 'Both'
+  };
+  return userTypeMap[userType as keyof typeof userTypeMap] || 'Unknown';
+}
+
+export function getUserTypeNumber(userType: string): number {
+  const userTypeMap: { [key: string]: number } = {
+    'client': 1,
+    'freelancer': 2,
+    'both': 3
+  };
+  return userTypeMap[userType.toLowerCase()] || 0;
 }

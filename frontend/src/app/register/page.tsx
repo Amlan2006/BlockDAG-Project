@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from 'react';
-import { useAccount } from 'wagmi';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useUserRegistryWrite, useIsRegistered, getUserTypeNumber } from '@/utils/contracts';
 
 export default function Register() {
   const { address, isConnected } = useAccount();
   const router = useRouter();
-  const [userType, setUserType] = useState('');
+  const searchParams = useSearchParams();
+  const roleParam = searchParams.get('role');
+  
+  const [userType, setUserType] = useState(roleParam || '');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,6 +21,55 @@ export default function Register() {
   });
   const [currentSkill, setCurrentSkill] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>();
+  
+  // Check if user is already registered
+  const { data: isRegistered, isLoading: isCheckingRegistration, refetch: refetchRegistration } = useIsRegistered();
+  
+  // Smart contract functions
+  const { registerUser, isPending: isRegistering, error: contractError, data: hash, writeContract } = useUserRegistryWrite();
+  
+  // Wait for transaction confirmation
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash: txHash,
+  });
+  
+  useEffect(() => {
+    if (isRegistered && !isCheckingRegistration && !isSubmitting) {
+      // User is already registered, redirect to home
+      router.push('/');
+    }
+  }, [isRegistered, isCheckingRegistration, isSubmitting, router]);
+
+  // Set transaction hash when writeContract returns hash
+  useEffect(() => {
+    if (hash) {
+      setTxHash(hash);
+    }
+  }, [hash]);
+
+  // Handle successful transaction confirmation
+  useEffect(() => {
+    if (isConfirmed && !isCheckingRegistration) {
+      // Transaction confirmed, refetch registration status
+      refetchRegistration().then(() => {
+        // Small delay to ensure blockchain state is updated
+        setTimeout(() => {
+          // Redirect to appropriate dashboard
+          if (userType === 'client') {
+            router.push('/client');
+          } else if (userType === 'freelancer') {
+            router.push('/freelancer');
+          } else {
+            // Both - let user choose which dashboard to view first
+            router.push('/');
+          }
+          setIsSubmitting(false);
+        }, 1000);
+      });
+    }
+  }, [isConfirmed, isCheckingRegistration, userType, router, refetchRegistration]);
 
   const handleSkillAdd = () => {
     if (currentSkill.trim() && !formData.skills.includes(currentSkill.trim())) {
@@ -38,30 +91,29 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
+    setTxHash(undefined);
     
     try {
-      // TODO: Call smart contract to register user
-      console.log('Registering user:', {
-        userType,
-        address,
-        ...formData
-      });
+      const userTypeNumber = getUserTypeNumber(userType);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Redirect to appropriate dashboard
-      if (userType === 'client') {
-        router.push('/client');
-      } else if (userType === 'freelancer') {
-        router.push('/freelancer');
-      } else {
-        // Both - let user choose
-        router.push('/choose-role');
+      if (userTypeNumber === 0) {
+        throw new Error('Please select a valid user type');
       }
-    } catch (error) {
+      
+      // Call smart contract to register user
+      registerUser(
+        userTypeNumber,
+        formData.name,
+        formData.email,
+        formData.bio,
+        formData.skills,
+        formData.profileImage || ''
+      );
+      
+    } catch (error: any) {
       console.error('Registration failed:', error);
-    } finally {
+      setError(error.message || 'Registration failed. Please try again.');
       setIsSubmitting(false);
     }
   };
@@ -82,6 +134,26 @@ export default function Register() {
       </div>
     );
   }
+  
+  if (isCheckingRegistration || (isSubmitting && isConfirming)) {
+    return (
+      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">
+            {isCheckingRegistration ? 'Checking registration status...' : 
+             isSubmitting && isConfirming ? 'Confirming transaction...' : 
+             'Processing registration...'}
+          </p>
+          {txHash && (
+            <p className="text-sm text-gray-500 mt-2">
+              Transaction: {txHash.slice(0, 10)}...{txHash.slice(-8)}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#070E1B] p-6">
@@ -94,6 +166,17 @@ export default function Register() {
 
         <div className="bg-gray-800 rounded-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
+            {error && (
+              <div className="bg-red-600/20 border border-red-600 rounded-lg p-4">
+                <p className="text-red-400">{error}</p>
+              </div>
+            )}
+            
+            {contractError && (
+              <div className="bg-red-600/20 border border-red-600 rounded-lg p-4">
+                <p className="text-red-400">Transaction failed: {contractError.message}</p>
+              </div>
+            )}
             {/* User Type Selection */}
             <div>
               <label className="block text-gray-300 text-lg font-medium mb-4">I want to join as:</label>
@@ -248,13 +331,13 @@ export default function Register() {
                   
                   <button 
                     type="submit"
-                    disabled={isSubmitting || !userType || !formData.name || !formData.email || ((userType === 'freelancer' || userType === 'both') && formData.skills.length === 0)}
+                    disabled={isSubmitting || isRegistering || !userType || !formData.name || !formData.email || ((userType === 'freelancer' || userType === 'both') && formData.skills.length === 0)}
                     className="w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
                   >
-                    {isSubmitting ? (
+                    {isSubmitting || isRegistering ? (
                       <div className="flex items-center justify-center gap-2">
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        Registering...
+                        {isRegistering ? 'Confirming transaction...' : 'Registering...'}
                       </div>
                     ) : (
                       `Join FreelanceDAO as ${userType === 'both' ? 'Client & Freelancer' : userType.charAt(0).toUpperCase() + userType.slice(1)}`

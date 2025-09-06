@@ -3,18 +3,43 @@
 import ConnectButton from "@/components/ConnectButton";
 import { useAccount, useDisconnect } from "wagmi";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useIsRegistered, useUserProfile, formatUserType } from "@/utils/contracts";
 
 export default function Home() {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const router = useRouter();
-  const [isRegistered, setIsRegistered] = useState(false); // TODO: Check from smart contract
+  
+  // Get user registration status from smart contract
+  const { data: isRegistered, isLoading: isLoadingRegistration } = useIsRegistered();
+  const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
+  
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isConnected && !isLoadingRegistration && !isLoadingProfile) {
+      setIsLoading(false);
+    }
+  }, [isConnected, isLoadingRegistration, isLoadingProfile]);
 
   const handleRoleSelection = (role: string) => {
-    if (isRegistered) {
-      // If already registered, go directly to dashboard
-      router.push(`/${role}`);
+    if (isRegistered && userProfile) {
+      // If already registered, determine which dashboard to show based on their registered type
+      const userTypeNumber = userProfile[0]; // userType is the first element
+      const userTypeString = formatUserType(userTypeNumber).toLowerCase();
+      
+      if (userTypeString === 'both') {
+        // User can choose which dashboard to access
+        router.push(`/${role}`);
+      } else if (userTypeString === role) {
+        // User registered type matches requested role
+        router.push(`/${role}`);
+      } else {
+        // User trying to access wrong dashboard
+        alert(`You are registered as a ${userTypeString}. Please select the correct dashboard.`);
+        return;
+      }
     } else {
       // If not registered, go to registration with pre-selected role
       router.push(`/register?role=${role}`);
@@ -38,9 +63,22 @@ export default function Home() {
               <div className="flex items-center space-x-4">
                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 <span className="text-white">Connected: {address?.slice(0, 6)}...{address?.slice(-4)}</span>
-                {isRegistered && (
-                  <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
-                    ✓ Registered
+                {isLoading ? (
+                  <span className="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">
+                    ⏳ Checking registration...
+                  </span>
+                ) : isRegistered && userProfile ? (
+                  <div className="flex items-center space-x-2">
+                    <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
+                      ✓ Registered as {formatUserType(userProfile[0])}
+                    </span>
+                    <span className="text-gray-300 text-sm">
+                      {userProfile[1]} {/* name */}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                    📝 Not registered
                   </span>
                 )}
               </div>
@@ -59,7 +97,7 @@ export default function Home() {
           )}
         </div>
 
-        {isConnected ? (
+        {isConnected && !isLoading ? (
           <>
             {/* Role Selection */}
             <div className="text-center mb-8">
@@ -90,10 +128,18 @@ export default function Home() {
                 </ul>
                 <button 
                   onClick={() => handleRoleSelection('client')}
-                  className="w-full bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+                  disabled={isRegistered && userProfile && formatUserType(userProfile[0]) === 'Freelancer'}
+                  className={`w-full px-6 py-3 rounded-lg font-semibold transition-colors ${
+                    isRegistered && userProfile && formatUserType(userProfile[0]) === 'Freelancer'
+                      ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+                      : 'bg-white text-blue-700 hover:bg-blue-50'
+                  }`}
                 >
                   {isRegistered ? "Go to Client Dashboard" : "Join as Client"}
                 </button>
+                {isRegistered && userProfile && formatUserType(userProfile[0]) === 'Freelancer' && (
+                  <p className="text-blue-200 text-xs mt-2">You are registered as a Freelancer</p>
+                )}
               </div>
 
               {/* Freelancer Card */}
@@ -111,10 +157,18 @@ export default function Home() {
                 </ul>
                 <button 
                   onClick={() => handleRoleSelection('freelancer')}
-                  className="w-full bg-white text-green-700 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+                  disabled={isRegistered && userProfile && formatUserType(userProfile[0]) === 'Client'}
+                  className={`w-full px-6 py-3 rounded-lg font-semibold transition-colors ${
+                    isRegistered && userProfile && formatUserType(userProfile[0]) === 'Client'
+                      ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+                      : 'bg-white text-green-700 hover:bg-green-50'
+                  }`}
                 >
                   {isRegistered ? "Go to Freelancer Dashboard" : "Join as Freelancer"}
                 </button>
+                {isRegistered && userProfile && formatUserType(userProfile[0]) === 'Client' && (
+                  <p className="text-green-200 text-xs mt-2">You are registered as a Client</p>
+                )}
               </div>
             </div>
 
@@ -130,6 +184,12 @@ export default function Home() {
               </div>
             )}
           </>
+        ) : isConnected && isLoading ? (
+          /* Loading State */
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p className="text-gray-400">Loading your registration status...</p>
+          </div>
         ) : (
           /* Welcome Section for Non-Connected Users */
           <div className="text-center">

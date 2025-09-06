@@ -3,117 +3,248 @@
 import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
+import { 
+  useClientProjects, 
+  useProject, 
+  useProjectApplications,
+  useFreelanceEscrowWrite,
+  useIsClient,
+  formatProjectStatus 
+} from '@/utils/contracts';
+import { formatEther } from 'viem';
 
 export default function ClientDashboard() {
   const { address, isConnected } = useAccount();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
-
-  // Mock data - replace with actual smart contract calls
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      title: "E-commerce Website",
-      freelancer: "0x1234...5678",
-      freelancerName: "John Doe",
-      status: "In Progress",
-      budget: "2.5 ETH",
-      progress: "2/3",
-      nextMilestone: "Frontend Development",
-      daysLeft: 5
-    },
-    {
-      id: 2,
-      title: "Mobile App Design",
-      freelancer: "0x9876...5432",
-      freelancerName: "Jane Smith",
-      status: "Completed",
-      budget: "1.8 ETH",
-      progress: "3/3",
-      rating: 5
-    }
-  ]);
-
-  const [availableFreelancers, setAvailableFreelancers] = useState([
-    {
-      address: "0x1234...5678",
-      name: "John Doe",
-      skills: ["React", "Solidity", "Web3"],
-      rating: 4.8,
-      projectsCompleted: 15,
-      hourlyRate: "0.05 ETH"
-    },
-    {
-      address: "0x9876...5432", 
-      name: "Jane Smith",
-      skills: ["UI/UX", "Figma", "React"],
-      rating: 4.9,
-      projectsCompleted: 23,
-      hourlyRate: "0.04 ETH"
-    }
-  ]);
+  
+  // Check if user is registered as client
+  const { data: isClient, isLoading: isCheckingClient } = useIsClient();
+  
+  // Get client's projects
+  const { data: projectIds, isLoading: isLoadingProjects } = useClientProjects();
+  
+  // Smart contract functions
+  const { assignFreelancer, approveMilestone } = useFreelanceEscrowWrite();
+  
+  const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const [isAssigning, setIsAssigning] = useState(false);
 
   useEffect(() => {
     if (!isConnected) {
       router.push('/');
     }
-    // TODO: Check if user is registered as client
-    // TODO: Load user profile and projects from smart contract
   }, [isConnected, router]);
+  
+  const handleAssignFreelancer = async (projectId: number, freelancerAddress: string) => {
+    try {
+      setIsAssigning(true);
+      await assignFreelancer(projectId, freelancerAddress);
+      
+      alert('Freelancer assigned successfully!');
+      
+      // Refresh data after assignment
+      await new Promise(resolve => setTimeout(resolve, 3000));
+    } catch (error) {
+      console.error('Error assigning freelancer:', error);
+      alert('Failed to assign freelancer. Please try again.');
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+  
+  const handleApproveMilestone = async (projectId: number, milestoneIndex: number) => {
+    try {
+      await approveMilestone(projectId, milestoneIndex);
+      alert('Milestone approved successfully!');
+    } catch (error) {
+      console.error('Error approving milestone:', error);
+      alert('Failed to approve milestone. Please try again.');
+    }
+  };
 
-  const Overview = () => (
-    <div className="space-y-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-blue-600 rounded-lg p-4">
-          <h3 className="text-white text-sm font-medium">Active Projects</h3>
-          <p className="text-white text-2xl font-bold">3</p>
-        </div>
-        <div className="bg-green-600 rounded-lg p-4">
-          <h3 className="text-white text-sm font-medium">Completed Projects</h3>
-          <p className="text-white text-2xl font-bold">12</p>
-        </div>
-        <div className="bg-yellow-600 rounded-lg p-4">
-          <h3 className="text-white text-sm font-medium">Total Spent</h3>
-          <p className="text-white text-2xl font-bold">15.2 ETH</p>
-        </div>
-        <div className="bg-purple-600 rounded-lg p-4">
-          <h3 className="text-white text-sm font-medium">Avg Rating Given</h3>
-          <p className="text-white text-2xl font-bold">4.7 ⭐</p>
-        </div>
-      </div>
 
-      {/* Active Projects */}
+
+  // Component to display individual project details
+  const ProjectCard = ({ projectId }: { projectId: number }) => {
+    const { data: projectData, isLoading } = useProject(projectId);
+    const { data: applications, isLoading: isLoadingApps, error: appsError } = useProjectApplications(projectId);
+    
+    // Debug logging
+    console.log(`Project ${projectId}:`, {
+      projectData,
+      applications,
+      isLoadingApps,
+      appsError
+    });
+    
+    if (isLoading || !projectData) {
+      return (
+        <div className="bg-gray-800 rounded-lg p-6 animate-pulse">
+          <div className="h-6 bg-gray-700 rounded mb-4"></div>
+          <div className="h-4 bg-gray-700 rounded mb-2"></div>
+          <div className="h-4 bg-gray-700 rounded"></div>
+        </div>
+      );
+    }
+    
+    const [client, freelancer, paymentToken, totalAmount, platformFee, status, createdAt, description] = projectData;
+    const projectStatus = formatProjectStatus(status);
+    const hasFreelancer = freelancer !== '0x0000000000000000000000000000000000000000';
+    
+    // More detailed application checking
+    // applications is [freelancers[], proposals[], proposedRates[], appliedAt[], isAccepted[]]
+    const freelancersArray = applications && applications[0] ? applications[0] as any[] : [];
+    const hasApplications = Boolean(freelancersArray.length > 0);
+    const applicationCount = freelancersArray.length;
+    
+    console.log(`Project ${projectId} details:`, {
+      hasFreelancer,
+      hasApplications,
+      applicationCount,
+      freelancersArray: freelancersArray,
+      applicationsStructure: applications ? {
+        freelancers: applications[0],
+        proposals: applications[1],
+        proposedRates: applications[2],
+        appliedAt: applications[3],
+        isAccepted: applications[4]
+      } : null
+    });
+    
+    return (
       <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-white mb-4">Active Projects</h2>
-        <div className="space-y-4">
-          {projects.filter(p => p.status === "In Progress").map(project => (
-            <div key={project.id} className="bg-gray-700 rounded-lg p-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-white font-medium">{project.title}</h3>
-                  <p className="text-gray-300 text-sm">Freelancer: {project.freelancerName}</p>
-                  <p className="text-gray-300 text-sm">Budget: {project.budget}</p>
-                </div>
-                <div className="text-right">
-                  <span className="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">{project.status}</span>
-                  <p className="text-gray-300 text-sm mt-1">Progress: {project.progress}</p>
-                </div>
-              </div>
-              <div className="mt-3 pt-3 border-t border-gray-600">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300 text-sm">Next: {project.nextMilestone}</span>
-                  <span className="text-yellow-400 text-sm">{project.daysLeft} days left</span>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h3 className="text-white font-bold text-lg">{description.slice(0, 50)}...</h3>
+            <p className="text-gray-400 text-sm">
+              {hasFreelancer ? `Freelancer: ${freelancer.slice(0, 6)}...${freelancer.slice(-4)}` : 'No freelancer assigned'}
+            </p>
+          </div>
+          <span className={`px-3 py-1 rounded-full text-sm ${
+            projectStatus === 'Active' ? 'bg-yellow-600' : 
+            projectStatus === 'Completed' ? 'bg-green-600' : 
+            projectStatus === 'Cancelled' ? 'bg-red-600' : 'bg-gray-600'
+          } text-white`}>
+            {projectStatus}
+          </span>
+        </div>
+        
+        <div className="space-y-2 mb-4">
+          <div className="flex justify-between">
+            <span className="text-gray-300">Budget:</span>
+            <span className="text-white">{formatEther(totalAmount)} ETH</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-300">Created:</span>
+            <span className="text-white">{new Date(Number(createdAt) * 1000).toLocaleDateString()}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-300">Applications:</span>
+            <span className="text-white">{applicationCount}</span>
+          </div>
+          {/* Debug info */}
+          <div className="text-xs text-gray-500">
+            Debug: hasFreelancer={hasFreelancer.toString()}, hasApps={hasApplications.toString()}
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <button 
+            onClick={() => setSelectedProject(projectId)}
+            className="flex-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
+          >
+            View Details
+          </button>
+          
+          {/* Always show the button for debugging, but indicate why it might be disabled */}
+          <button 
+            onClick={() => {
+              console.log('View Applications clicked for project:', projectId);
+              console.log('Current state:', { hasFreelancer, hasApplications, applicationCount });
+              console.log('Applications data structure:', applications);
+              if (hasApplications) {
+                router.push(`/applications/${projectId}`);
+              } else {
+                alert(`No applications found for project ${projectId}. Freelancers count: ${freelancersArray.length}`);
+              }
+            }}
+            className={`flex-1 text-white px-3 py-2 rounded ${
+              !hasFreelancer && hasApplications 
+                ? 'bg-green-600 hover:bg-green-700' 
+                : 'bg-gray-600'
+            }`}
+            disabled={hasFreelancer}
+          >
+            {hasFreelancer 
+              ? 'Freelancer Assigned' 
+              : hasApplications 
+                ? `View Applications (${applicationCount})` 
+                : 'No Applications'
+            }
+          </button>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  const Overview = () => {
+    const activeProjects = projectIds?.filter(id => {
+      // This would need individual project data to determine status
+      return true; // Placeholder
+    })?.length || 0;
+    
+    return (
+      <div className="space-y-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-blue-600 rounded-lg p-4">
+            <h3 className="text-white text-sm font-medium">Total Projects</h3>
+            <p className="text-white text-2xl font-bold">{projectIds?.length || 0}</p>
+          </div>
+          <div className="bg-green-600 rounded-lg p-4">
+            <h3 className="text-white text-sm font-medium">Active Projects</h3>
+            <p className="text-white text-2xl font-bold">{activeProjects}</p>
+          </div>
+          <div className="bg-yellow-600 rounded-lg p-4">
+            <h3 className="text-white text-sm font-medium">Total Spent</h3>
+            <p className="text-white text-2xl font-bold">-- ETH</p>
+          </div>
+          <div className="bg-purple-600 rounded-lg p-4">
+            <h3 className="text-white text-sm font-medium">Avg Rating Given</h3>
+            <p className="text-white text-2xl font-bold">-- ⭐</p>
+          </div>
+        </div>
+
+        {/* Recent Projects */}
+        <div className="bg-gray-800 rounded-lg p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Recent Projects</h2>
+          {isLoadingProjects ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-gray-400">Loading projects...</p>
+            </div>
+          ) : projectIds && projectIds.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {projectIds.slice(0, 4).map((projectId) => (
+                <ProjectCard key={projectId} projectId={Number(projectId)} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-gray-400 mb-4">No projects yet</p>
+              <button 
+                onClick={() => router.push('/create-project')}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+              >
+                Create Your First Project
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   const MyProjects = () => (
     <div className="space-y-6">
@@ -127,112 +258,36 @@ export default function ClientDashboard() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {projects.map(project => (
-          <div key={project.id} className="bg-gray-800 rounded-lg p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-white font-bold">{project.title}</h3>
-                <p className="text-gray-400 text-sm">Freelancer: {project.freelancerName}</p>
-              </div>
-              <span className={`px-3 py-1 rounded-full text-sm ${
-                project.status === 'Completed' ? 'bg-green-600' : 'bg-yellow-600'
-              } text-white`}>
-                {project.status}
-              </span>
-            </div>
-            
-            <div className="space-y-2 mb-4">
-              <div className="flex justify-between">
-                <span className="text-gray-300">Budget:</span>
-                <span className="text-white">{project.budget}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-300">Progress:</span>
-                <span className="text-white">{project.progress} Milestones</span>
-              </div>
-              {project.rating && (
-                <div className="flex justify-between">
-                  <span className="text-gray-300">Your Rating:</span>
-                  <span className="text-yellow-400">{project.rating}⭐</span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-2">
-              <button className="flex-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">
-                View Details
-              </button>
-              {project.status === 'In Progress' && (
-                <button className="flex-1 bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700">
-                  Message Freelancer
-                </button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+      {isLoadingProjects ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading your projects...</p>
+        </div>
+      ) : projectIds && projectIds.length > 0 ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {projectIds.map((projectId) => (
+            <ProjectCard key={projectId} projectId={Number(projectId)} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <h3 className="text-white text-xl font-bold mb-2">No Projects Yet</h3>
+          <p className="text-gray-400 mb-6">Create your first project to start hiring freelancers</p>
+          <button 
+            onClick={() => router.push('/create-project')}
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700"
+          >
+            Create Your First Project
+          </button>
+        </div>
+      )}
     </div>
   );
 
-  const FindFreelancers = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Find Freelancers</h2>
-        <div className="flex gap-2">
-          <input 
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg"
-            placeholder="Search skills..."
-          />
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            Search
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {availableFreelancers.map((freelancer, index) => (
-          <div key={index} className="bg-gray-800 rounded-lg p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-white font-bold">{freelancer.name}</h3>
-                <p className="text-gray-400 text-sm">{freelancer.address}</p>
-              </div>
-              <span className="text-yellow-400">{freelancer.rating}⭐</span>
-            </div>
-            
-            <div className="space-y-2 mb-4">
-              <div>
-                <span className="text-gray-300 text-sm">Skills:</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {freelancer.skills.map((skill, i) => (
-                    <span key={i} className="bg-blue-600 text-white px-2 py-1 rounded text-xs">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-300">Projects Completed:</span>
-                <span className="text-white">{freelancer.projectsCompleted}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-300">Hourly Rate:</span>
-                <span className="text-white">{freelancer.hourlyRate}</span>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <button className="flex-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">
-                Hire
-              </button>
-              <button className="flex-1 bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700">
-                View Profile
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+  const Payments = () => (
+    <div className="bg-gray-800 rounded-lg p-6">
+      <h2 className="text-xl font-bold text-white mb-4">Payment History</h2>
+      <p className="text-gray-400">Payment tracking functionality will be implemented based on project milestone data...</p>
     </div>
   );
 
@@ -242,6 +297,34 @@ export default function ClientDashboard() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
           <p className="text-gray-400">Please connect your wallet to access the client dashboard.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isCheckingClient) {
+    return (
+      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Verifying client status...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
+          <p className="text-gray-400 mb-6">You must be registered as a client to access this dashboard.</p>
+          <button 
+            onClick={() => router.push('/')}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          >
+            Go Back to Home
+          </button>
         </div>
       </div>
     );
@@ -270,10 +353,9 @@ export default function ClientDashboard() {
         {/* Navigation Tabs */}
         <div className="flex space-x-4 mb-6">
           {[
-            { id: 'overview', label: '📊 Overview', icon: '📊' },
-            { id: 'projects', label: '📋 My Projects', icon: '📋' },
-            { id: 'freelancers', label: '👥 Find Freelancers', icon: '👥' },
-            { id: 'payments', label: '💰 Payments', icon: '💰' },
+            { id: 'overview', label: '📊 Overview' },
+            { id: 'projects', label: '📋 My Projects' },
+            { id: 'payments', label: '💰 Payments' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -292,13 +374,7 @@ export default function ClientDashboard() {
         {/* Tab Content */}
         {activeTab === 'overview' && <Overview />}
         {activeTab === 'projects' && <MyProjects />}
-        {activeTab === 'freelancers' && <FindFreelancers />}
-        {activeTab === 'payments' && (
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-white mb-4">Payment History</h2>
-            <p className="text-gray-400">Payment tracking functionality coming soon...</p>
-          </div>
-        )}
+        {activeTab === 'payments' && <Payments />}
       </div>
     </div>
   );

@@ -6,17 +6,18 @@ import {FreelanceEscrow} from "../src/FreelanceEscrow.sol";
 import {UserRegistry} from "../src/UserRegistry.sol";
 
 contract DeployFreelanceEscrow is Script {
-    function run() public returns (FreelanceEscrow, UserRegistry) {
+    function run() public returns (FreelanceEscrow,UserRegistry) {
         vm.startBroadcast();
         
         // Deploy UserRegistry first
         UserRegistry userRegistry = new UserRegistry();
         
         // Deploy FreelanceEscrow with UserRegistry address
+        // UserRegistry userRegistry = 0xeCE0f83Ff830FD139665349BA391e2ADE19DcED6;
         FreelanceEscrow escrow = new FreelanceEscrow(address(userRegistry));
         
         vm.stopBroadcast();
         
-        return (escrow, userRegistry);
+        return (escrow,userRegistry);
     }
 }

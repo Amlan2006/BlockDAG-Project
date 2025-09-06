@@ -6,7 +6,9 @@ import { useRouter } from 'next/navigation';
 import { 
   useAvailableProjects, 
   useProject, 
-  useFreelanceEscrowWrite, 
+  useFreelanceEscrowWrite,
+  useFreelancerProjects, 
+  useIsFreelancer,
   formatProjectStatus 
 } from '../../utils/contracts';
 import { parseEther, formatEther } from 'viem';
@@ -47,19 +49,18 @@ interface ApplicationData {
 export default function FreelancerDashboard() {
   const { address, isConnected } = useAccount();
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState('browse');
 
-  const [availableJobs, setAvailableJobs] = useState<Job[]>([]);
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
-    search: '',
-    category: 'all',
-    budgetMin: '',
-    budgetMax: ''
-  });
-
-  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  // Check if user is registered as freelancer
+  const { data: isFreelancer, isLoading: isCheckingFreelancer } = useIsFreelancer();
+  
+  // Get available projects from smart contract
+  const { data: availableProjectIds, isLoading: isLoadingAvailable, refetch: refetchProjects } = useAvailableProjects();
+  
+  // Get freelancer's assigned projects
+  const { data: assignedProjectIds, isLoading: isLoadingAssigned, refetch: refetchAssigned } = useFreelancerProjects();
+  
+  const [selectedJob, setSelectedJob] = useState<number | null>(null);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [applicationData, setApplicationData] = useState<ApplicationData>({
     proposal: '',
@@ -67,121 +68,21 @@ export default function FreelancerDashboard() {
     estimatedTime: ''
   });
   const [userApplications, setUserApplications] = useState<Set<number>>(new Set());
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    search: '',
+    category: 'all',
+    budgetMin: '',
+    budgetMax: ''
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!isConnected) {
       router.push('/');
     }
-    loadAvailableProjects();
   }, [isConnected, router]);
 
-  useEffect(() => {
-    let filtered = [...availableJobs];
-    
-    if (searchFilters.search) {
-      const searchLower = searchFilters.search.toLowerCase();
-      filtered = filtered.filter(job => 
-        job.title.toLowerCase().includes(searchLower) ||
-        job.description.toLowerCase().includes(searchLower) ||
-        job.clientName.toLowerCase().includes(searchLower)
-      );
-    }
-    
-    if (searchFilters.budgetMin) {
-      const minBudget = parseFloat(searchFilters.budgetMin);
-      filtered = filtered.filter(job => parseFloat(job.budget.replace(' ETH', '')) >= minBudget);
-    }
-    
-    if (searchFilters.budgetMax) {
-      const maxBudget = parseFloat(searchFilters.budgetMax);
-      filtered = filtered.filter(job => parseFloat(job.budget.replace(' ETH', '')) <= maxBudget);
-    }
-    
-    if (searchFilters.category !== 'all') {
-      filtered = filtered.filter(job => 
-        job.skills.some((skill: string) => 
-          skill.toLowerCase().includes(searchFilters.category.toLowerCase())
-        )
-      );
-    }
-    
-    setFilteredJobs(filtered);
-  }, [availableJobs, searchFilters]);
-
-  const loadAvailableProjects = async () => {
-    setLoading(true);
-    try {
-      // This will be replaced with actual smart contract data in the next update
-      // For now, keeping mock data until we implement the full contract integration
-      const mockProjects: Job[] = [
-        {
-          id: 1,
-          title: "React Developer Needed",
-          client: "0xabcd...1234",
-          clientName: "TechCorp",
-          clientRating: 4.5,
-          budget: "3.0 ETH",
-          deadline: "2 weeks",
-          skills: ["React", "TypeScript", "Web3"],
-          description: "Need an experienced React developer for a DeFi dashboard project. Building responsive components and integrating with smart contracts.",
-          postedDate: "2 days ago",
-          applicants: 5,
-          milestones: [
-            { description: "UI Components", amount: "1.0 ETH", deadline: "1 week" },
-            { description: "Smart Contract Integration", amount: "1.5 ETH", deadline: "2 weeks" },
-            { description: "Testing & Deployment", amount: "0.5 ETH", deadline: "2.5 weeks" }
-          ],
-          status: "Open"
-        },
-        {
-          id: 2,
-          title: "Smart Contract Audit",
-          client: "0xefgh...5678",
-          clientName: "DeFi Protocol",
-          clientRating: 4.9,
-          budget: "5.0 ETH",
-          deadline: "1 month",
-          skills: ["Solidity", "Security", "Auditing"],
-          description: "Security audit required for our new lending protocol smart contracts. Must have experience with DeFi protocols.",
-          postedDate: "1 day ago",
-          applicants: 3,
-          milestones: [
-            { description: "Initial Review", amount: "2.0 ETH", deadline: "1 week" },
-            { description: "Detailed Analysis", amount: "2.0 ETH", deadline: "3 weeks" },
-            { description: "Final Report", amount: "1.0 ETH", deadline: "1 month" }
-          ],
-          status: "Open"
-        },
-        {
-          id: 3,
-          title: "Mobile DApp Development",
-          client: "0xqrst...7890",
-          clientName: "MobileDeFi",
-          clientRating: 4.3,
-          budget: "4.5 ETH",
-          deadline: "6 weeks",
-          skills: ["React Native", "Web3", "Mobile"],
-          description: "Develop a mobile DApp for our DeFi platform with wallet integration and portfolio tracking features.",
-          postedDate: "1 hour ago",
-          applicants: 1,
-          milestones: [
-            { description: "App Architecture", amount: "1.0 ETH", deadline: "1 week" },
-            { description: "Core Features", amount: "2.5 ETH", deadline: "4 weeks" },
-            { description: "Testing & Launch", amount: "1.0 ETH", deadline: "6 weeks" }
-          ],
-          status: "Open"
-        }
-      ];
-      
-      setAvailableJobs(mockProjects);
-    } catch (error) {
-      console.error('Error loading projects:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const { applyToProject: applyToProjectContract } = useFreelanceEscrowWrite();
+  const { applyToProject: applyToProjectContract, isPending: isApplying } = useFreelanceEscrowWrite();
 
   const handleApplyToJob = async (jobId: number) => {
     try {
@@ -199,25 +100,199 @@ export default function FreelancerDashboard() {
       setShowApplicationModal(false);
       setApplicationData({ proposal: '', proposedRate: '', estimatedTime: '' });
       
-      setAvailableJobs(prev => prev.map(job => 
-        job.id === jobId ? { ...job, applicants: job.applicants + 1 } : job
-      ));
-      
       alert('Application submitted successfully!');
-    } catch (error) {
+      
+      // Refresh projects
+      refetchProjects();
+    } catch (error: any) {
       console.error('Error applying to job:', error);
-      alert('Failed to submit application. Please try again.');
+      alert('Failed to submit application: ' + (error.message || 'Please try again.'));
     }
   };
 
+  // Component to display assigned project
+  const AssignedProjectCard = ({ projectId }: { projectId: number }) => {
+    const { data: projectData, isLoading } = useProject(projectId);
+    
+    if (isLoading || !projectData) {
+      return (
+        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 animate-pulse">
+          <div className="h-6 bg-gray-700 rounded mb-4"></div>
+          <div className="h-4 bg-gray-700 rounded mb-2"></div>
+          <div className="h-4 bg-gray-700 rounded"></div>
+        </div>
+      );
+    }
+    
+    const [client, freelancer, paymentToken, totalAmount, platformFee, status, createdAt, description] = projectData;
+    const projectStatus = formatProjectStatus(status);
+    const isAssignedToMe = freelancer.toLowerCase() === address?.toLowerCase();
+    
+    if (!isAssignedToMe) {
+      return null;
+    }
+    
+    return (
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h3 className="text-white font-bold text-lg">{description.slice(0, 60)}...</h3>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                projectStatus === 'Active' ? 'bg-green-600 text-white' : 
+                projectStatus === 'Completed' ? 'bg-blue-600 text-white' : 
+                projectStatus === 'Cancelled' ? 'bg-red-600 text-white' : 'bg-gray-600 text-white'
+              }`}>
+                {projectStatus}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 text-sm text-gray-400 mb-2">
+              <span>📅 Started: {new Date(Number(createdAt) * 1000).toLocaleDateString()}</span>
+              <span>👤 Client: {client.slice(0, 6)}...{client.slice(-4)}</span>
+              <span className="text-green-400">✓ Assigned to You</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-green-400 font-bold text-xl">{formatEther(totalAmount)} ETH</p>
+            <p className="text-gray-400 text-sm">Total Budget</p>
+          </div>
+        </div>
+        
+        <p className="text-gray-300 mb-4 leading-relaxed">{description}</p>
+        
+        {/* Project Details */}
+        <div className="mb-4 bg-gray-700 rounded-lg p-3">
+          <div className="grid grid-cols-3 gap-4 text-sm">
+            <div>
+              <span className="text-gray-400">Project ID:</span>
+              <span className="text-white ml-2">#{projectId}</span>
+            </div>
+            <div>
+              <span className="text-gray-400">Status:</span>
+              <span className={`ml-2 ${
+                projectStatus === 'Active' ? 'text-green-400' : 
+                projectStatus === 'Completed' ? 'text-blue-400' : 
+                projectStatus === 'Cancelled' ? 'text-red-400' : 'text-gray-400'
+              }`}>{projectStatus}</span>
+            </div>
+            <div>
+              <span className="text-gray-400">Platform Fee:</span>
+              <span className="text-white ml-2">{formatEther(platformFee)} ETH</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex-1">
+            View Milestones
+          </button>
+          <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+            Submit Work
+          </button>
+          <button className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            Contact Client
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // Component to display individual project from smart contract
+  const ProjectCard = ({ projectId }: { projectId: number }) => {
+    const { data: projectData, isLoading } = useProject(projectId);
+    
+    if (isLoading || !projectData) {
+      return (
+        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 animate-pulse">
+          <div className="h-6 bg-gray-700 rounded mb-4"></div>
+          <div className="h-4 bg-gray-700 rounded mb-2"></div>
+          <div className="h-4 bg-gray-700 rounded"></div>
+        </div>
+      );
+    }
+    
+    const [client, freelancer, paymentToken, totalAmount, platformFee, status, createdAt, description] = projectData;
+    const projectStatus = formatProjectStatus(status);
+    const hasFreelancer = freelancer !== '0x0000000000000000000000000000000000000000';
+    const hasApplied = userApplications.has(projectId);
+    
+    // Only show if project is active and doesn't have a freelancer assigned
+    if (projectStatus !== 'Active' || hasFreelancer) {
+      return null;
+    }
+    
+    return (
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h3 className="text-white font-bold text-lg">{description.slice(0, 60)}...</h3>
+              {hasApplied && (
+                <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
+                  Applied ✓
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-4 text-sm text-gray-400 mb-2">
+              <span>📅 {new Date(Number(createdAt) * 1000).toLocaleDateString()}</span>
+              <span>👤 {client.slice(0, 6)}...{client.slice(-4)}</span>
+              <span className="text-green-400">Open for Applications</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-green-400 font-bold text-xl">{formatEther(totalAmount)} ETH</p>
+            <p className="text-gray-400 text-sm">Total Budget</p>
+          </div>
+        </div>
+        
+        <p className="text-gray-300 mb-4 leading-relaxed">{description}</p>
+        
+        {/* Project Details */}
+        <div className="mb-4 bg-gray-700 rounded-lg p-3">
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-gray-400">Project ID:</span>
+              <span className="text-white ml-2">#{projectId}</span>
+            </div>
+            <div>
+              <span className="text-gray-400">Status:</span>
+              <span className="text-green-400 ml-2">{projectStatus}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          <button 
+            onClick={() => {
+              setSelectedJob(projectId);
+              setShowApplicationModal(true);
+            }}
+            disabled={hasApplied || isApplying}
+            className={`${
+              hasApplied || isApplying
+                ? 'bg-gray-600 cursor-not-allowed' 
+                : 'bg-blue-600 hover:bg-blue-700'
+            } text-white px-6 py-2 rounded-lg font-medium transition-colors flex-1`}
+          >
+            {isApplying ? 'Applying...' : hasApplied ? 'Applied ✓' : 'Apply Now'}
+          </button>
+          <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+            🔖 Save
+          </button>
+        </div>
+      </div>
+    );
+  };
   const ApplicationModal = () => {
-    if (!showApplicationModal || !selectedJob) return null;
+    if (!showApplicationModal || selectedJob === null) return null;
     
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-white">Apply to Project</h3>
+            <h3 className="text-2xl font-bold text-white">Apply to Project #{selectedJob}</h3>
             <button 
               onClick={() => setShowApplicationModal(false)}
               className="text-gray-400 hover:text-white text-xl"
@@ -226,15 +301,9 @@ export default function FreelancerDashboard() {
             </button>
           </div>
           
-          <div className="mb-6 p-4 bg-gray-700 rounded-lg">
-            <h4 className="text-white font-bold">{selectedJob.title}</h4>
-            <p className="text-gray-300 text-sm">Client: {selectedJob.clientName}</p>
-            <p className="text-green-400 font-bold">Budget: {selectedJob.budget}</p>
-          </div>
-          
           <form onSubmit={(e) => {
             e.preventDefault();
-            handleApplyToJob(selectedJob.id);
+            handleApplyToJob(selectedJob);
           }} className="space-y-4">
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
@@ -282,9 +351,10 @@ export default function FreelancerDashboard() {
             <div className="flex gap-4 pt-4">
               <button 
                 type="submit"
-                className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-medium"
+                disabled={isApplying}
+                className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50"
               >
-                Submit Application
+                {isApplying ? 'Submitting Application...' : 'Submit Application'}
               </button>
               <button 
                 type="button"
@@ -300,6 +370,55 @@ export default function FreelancerDashboard() {
     );
   };
 
+  const MyProjects = () => (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-white">My Assigned Projects</h2>
+        <button 
+          onClick={() => refetchAssigned()}
+          disabled={isLoadingAssigned}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+        >
+          {isLoadingAssigned ? 'Loading...' : '🔄 Refresh'}
+        </button>
+      </div>
+
+      {isLoadingAssigned ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading your assigned projects...</p>
+        </div>
+      ) : assignedProjectIds && assignedProjectIds.length > 0 ? (
+        <div className="space-y-6">
+          <div className="bg-gray-800 rounded-lg p-4 mb-4">
+            <p className="text-gray-400">
+              You have {assignedProjectIds.length} assigned project{assignedProjectIds.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <div className="space-y-4">
+            {assignedProjectIds.map((projectId) => (
+              <AssignedProjectCard key={projectId} projectId={Number(projectId)} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-6xl mb-4">📋</div>
+          <h3 className="text-white text-xl font-bold mb-2">No Assigned Projects Yet</h3>
+          <p className="text-gray-400 text-lg mb-6">
+            You haven't been assigned to any projects yet. Keep applying to available projects!
+          </p>
+          <button 
+            onClick={() => setActiveTab('browse')}
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700"
+          >
+            Browse Available Projects
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   const FindJobs = () => (
     <div className="space-y-6">
       {/* Search and Filter Header */}
@@ -307,166 +426,44 @@ export default function FreelancerDashboard() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-white">Browse Available Projects</h2>
           <button 
-            onClick={loadAvailableProjects}
-            disabled={loading}
+            onClick={() => refetchProjects()}
+            disabled={isLoadingAvailable}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? 'Loading...' : '🔄 Refresh'}
+            {isLoadingAvailable ? 'Loading...' : '🔄 Refresh'}
           </button>
-        </div>
-        
-        {/* Search Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <input 
-            value={searchFilters.search}
-            onChange={(e) => setSearchFilters({...searchFilters, search: e.target.value})}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            placeholder="🔍 Search projects..."
-          />
-          <select 
-            value={searchFilters.category}
-            onChange={(e) => setSearchFilters({...searchFilters, category: e.target.value})}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-          >
-            <option value="all">All Categories</option>
-            <option value="react">Web Development</option>
-            <option value="solidity">Smart Contracts</option>
-            <option value="mobile">Mobile Apps</option>
-            <option value="audit">Security & Auditing</option>
-          </select>
-          <input 
-            type="number"
-            step="0.1"
-            value={searchFilters.budgetMin}
-            onChange={(e) => setSearchFilters({...searchFilters, budgetMin: e.target.value})}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            placeholder="Min Budget (ETH)"
-          />
-          <input 
-            type="number"
-            step="0.1"
-            value={searchFilters.budgetMax}
-            onChange={(e) => setSearchFilters({...searchFilters, budgetMax: e.target.value})}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
-            placeholder="Max Budget (ETH)"
-          />
         </div>
         
         <div className="mt-4 flex items-center justify-between">
           <p className="text-gray-400">
-            Showing {filteredJobs.length} of {availableJobs.length} projects
+            Showing {availableProjectIds?.length || 0} available projects
           </p>
-          {(searchFilters.search || searchFilters.category !== 'all' || searchFilters.budgetMin || searchFilters.budgetMax) && (
-            <button 
-              onClick={() => setSearchFilters({ search: '', category: 'all', budgetMin: '', budgetMax: '' })}
-              className="text-blue-400 hover:text-blue-300 text-sm"
-            >
-              Clear Filters
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Job Listings */}
+      {/* Project Listings */}
       <div className="space-y-4">
-        {loading ? (
+        {isLoadingAvailable ? (
           <div className="bg-gray-800 rounded-lg p-12 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
             <p className="text-gray-400">Loading available projects...</p>
           </div>
-        ) : filteredJobs.length === 0 ? (
-          <div className="bg-gray-800 rounded-lg p-12 text-center">
-            <h3 className="text-white text-xl font-bold mb-2">No Projects Found</h3>
-            <p className="text-gray-400 mb-4">
-              {availableJobs.length === 0 
-                ? "No projects are currently available. Check back later!" 
-                : "Try adjusting your search filters to find more projects."}
-            </p>
+        ) : availableProjectIds && availableProjectIds.length > 0 ? (
+          <div className="space-y-4">
+            {availableProjectIds.map((projectId) => (
+              <ProjectCard key={projectId} projectId={Number(projectId)} />
+            ))}
           </div>
         ) : (
-          filteredJobs.map(job => {
-            const hasApplied = userApplications.has(job.id);
-            return (
-              <div key={job.id} className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-gray-600 transition-colors">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-white font-bold text-lg">{job.title}</h3>
-                      {hasApplied && (
-                        <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-medium">
-                          Applied ✓
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-400 mb-2">
-                      <span>📅 Posted {job.postedDate}</span>
-                      <span>👤 {job.clientName}</span>
-                      <span>⭐ {job.clientRating}</span>
-                      <span>👥 {job.applicants} applicants</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-green-400 font-bold text-xl">{job.budget}</p>
-                    <p className="text-gray-400 text-sm">⏱️ {job.deadline}</p>
-                  </div>
-                </div>
-                
-                <p className="text-gray-300 mb-4 leading-relaxed">{job.description}</p>
-                
-                {/* Skills */}
-                <div className="mb-4">
-                  <span className="text-gray-400 text-sm font-medium">Required Skills:</span>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {job.skills.map((skill, i) => (
-                      <span key={i} className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Milestones Preview */}
-                <div className="mb-4 bg-gray-700 rounded-lg p-3">
-                  <span className="text-gray-400 text-sm font-medium">Project Milestones:</span>
-                  <div className="mt-2 space-y-2">
-                    {job.milestones.slice(0, 2).map((milestone, i) => (
-                      <div key={i} className="flex justify-between text-sm">
-                        <span className="text-gray-300">{milestone.description}</span>
-                        <span className="text-green-400 font-medium">{milestone.amount}</span>
-                      </div>
-                    ))}
-                    {job.milestones.length > 2 && (
-                      <p className="text-gray-500 text-xs">+{job.milestones.length - 2} more milestones</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                  <button 
-                    onClick={() => {
-                      setSelectedJob(job);
-                      setShowApplicationModal(true);
-                    }}
-                    disabled={hasApplied}
-                    className={`${
-                      hasApplied 
-                        ? 'bg-gray-600 cursor-not-allowed' 
-                        : 'bg-blue-600 hover:bg-blue-700'
-                    } text-white px-6 py-2 rounded-lg font-medium transition-colors`}
-                  >
-                    {hasApplied ? 'Applied ✓' : 'Apply Now'}
-                  </button>
-                  <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                    🔖 Save
-                  </button>
-                  <button className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
-                    👤 View Client
-                  </button>
-                </div>
-              </div>
-            );
-          })
+          <div className="bg-gray-800 rounded-lg p-12 text-center">
+            <h3 className="text-white text-xl font-bold mb-2">No Projects Available</h3>
+            <p className="text-gray-400 mb-4">
+              There are currently no open projects available for applications.
+            </p>
+            <p className="text-gray-500 text-sm">
+              Check back later or refresh to see new opportunities!
+            </p>
+          </div>
         )}
       </div>
       
@@ -485,6 +482,34 @@ export default function FreelancerDashboard() {
     );
   }
 
+  if (isCheckingFreelancer) {
+    return (
+      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Verifying freelancer status...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isFreelancer) {
+    return (
+      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
+          <p className="text-gray-400 mb-6">You must be registered as a freelancer to access this dashboard.</p>
+          <button 
+            onClick={() => router.push('/')}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          >
+            Go Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#070E1B] p-6">
       <div className="max-w-7xl mx-auto">
@@ -492,7 +517,7 @@ export default function FreelancerDashboard() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">Freelancer Dashboard</h1>
-            <p className="text-gray-400">Browse and apply to available projects from clients.</p>
+            <p className="text-gray-400">Manage your projects and find new opportunities.</p>
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-white">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
@@ -505,7 +530,29 @@ export default function FreelancerDashboard() {
           </div>
         </div>
 
-        <FindJobs />
+        {/* Navigation Tabs */}
+        <div className="flex space-x-4 mb-6">
+          {[
+            { id: 'browse', label: '🔍 Browse Projects' },
+            { id: 'my-projects', label: '📋 My Projects' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-6 py-3 rounded-lg font-semibold ${
+                activeTab === tab.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'browse' && <FindJobs />}
+        {activeTab === 'my-projects' && <MyProjects />}
       </div>
     </div>
   );
