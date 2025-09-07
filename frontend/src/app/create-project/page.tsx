@@ -100,10 +100,10 @@ export default function CreateProject() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
-          <p className="text-[#f0d0e0]">Please connect your wallet to create a project.</p>
+          <h1 className="text-2xl font-bold text-primary mb-4">Access Denied</h1>
+          <p className="text-muted">Please connect your wallet to create a project.</p>
         </div>
       </div>
     );
@@ -111,10 +111,10 @@ export default function CreateProject() {
 
   if (isCheckingClient) {
     return (
-      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
-          <p className="text-[#f0d0e0]">Verifying client status...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary mx-auto mb-4"></div>
+          <p className="text-muted">Verifying client status...</p>
         </div>
       </div>
     );
@@ -122,13 +122,13 @@ export default function CreateProject() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
-          <p className="text-[#f0d0e0] mb-6">You must be registered as a client to create projects.</p>
+          <h1 className="text-2xl font-bold text-primary mb-4">Access Denied</h1>
+          <p className="text-muted mb-6">You must be registered as a client to create projects.</p>
           <button 
             onClick={() => router.push('/')}
-            className="bg-[#ff1493] text-white px-6 py-3 rounded-lg hover:bg-[#cc1076]"
+            className="btn-primary"
           >
             Go Back to Home
           </button>
@@ -138,23 +138,23 @@ export default function CreateProject() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1a000d] p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-[#f8f0f5]">Create New Project</h1>
-            <p className="text-[#f0d0e0]">Post a project and hire talented freelancers</p>
+            <h1 className="text-3xl font-bold text-primary">Create New Project</h1>
+            <p className="text-muted">Post a project and hire talented freelancers</p>
           </div>
           <button 
             onClick={() => router.push('/client')}
-            className="bg-[#660033] text-[#f8f0f5] px-4 py-2 rounded hover:bg-[#800040]"
+            className="btn-outline"
           >
             Back to Dashboard
           </button>
         </div>
 
-        <div className="bg-[#4d0026] rounded-lg p-8 border border-[#660033]">
+        <div className="card">
           <form onSubmit={handleSubmit} className="space-y-8">
             {error && (
               <div className="bg-red-600/20 border border-red-600 rounded-lg p-4">
@@ -170,13 +170,13 @@ export default function CreateProject() {
 
             {/* Basic Project Info */}
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-[#f8f0f5]">Project Details</h2>
+              <h2 className="text-xl font-bold text-primary">Project Details</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Project Title *</label>
+                  <label className="block text-muted text-sm font-medium mb-2">Project Title *</label>
                   <input 
-                    className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
+                    className="w-full bg-background-secondary text-primary px-4 py-3 rounded-lg border border-secondary focus:border-primary focus:outline-none" 
                     placeholder="e.g., React Dashboard Development"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -184,26 +184,26 @@ export default function CreateProject() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Category</label>
+                  <label className="block text-muted text-sm font-medium mb-2">Category</label>
                   <select 
-                    className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none"
+                    className="w-full bg-background-secondary text-primary px-4 py-3 rounded-lg border border-secondary focus:border-primary focus:outline-none"
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
                   >
-                    <option value="" className="bg-[#4d0026]">Select category</option>
-                    <option value="web-development" className="bg-[#4d0026]">Web Development</option>
-                    <option value="smart-contracts" className="bg-[#4d0026]">Smart Contracts</option>
-                    <option value="mobile-apps" className="bg-[#4d0026]">Mobile Apps</option>
-                    <option value="ui-ux" className="bg-[#4d0026]">UI/UX Design</option>
-                    <option value="auditing" className="bg-[#4d0026]">Security Auditing</option>
+                    <option value="" className="bg-background">Select category</option>
+                    <option value="web-development" className="bg-background">Web Development</option>
+                    <option value="smart-contracts" className="bg-background">Smart Contracts</option>
+                    <option value="mobile-apps" className="bg-background">Mobile Apps</option>
+                    <option value="ui-ux" className="bg-background">UI/UX Design</option>
+                    <option value="auditing" className="bg-background">Security Auditing</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Project Description *</label>
+                <label className="block text-muted text-sm font-medium mb-2">Project Description *</label>
                 <textarea 
-                  className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
+                  className="w-full bg-background-secondary text-primary px-4 py-3 rounded-lg border border-secondary focus:border-primary focus:outline-none" 
                   rows={6}
                   placeholder="Describe your project requirements, objectives, and any specific technologies needed..."
                   value={formData.description}
@@ -213,39 +213,39 @@ export default function CreateProject() {
               </div>
 
               <div>
-                <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Specific Freelancer (optional)</label>
+                <label className="block text-muted text-sm font-medium mb-2">Specific Freelancer (optional)</label>
                 <input 
-                  className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
+                  className="w-full bg-background-secondary text-primary px-4 py-3 rounded-lg border border-secondary focus:border-primary focus:outline-none" 
                   placeholder="0x... (leave empty for open applications)"
                   value={formData.freelancer}
                   onChange={(e) => setFormData({...formData, freelancer: e.target.value})}
                 />
-                <p className="text-[#f0d0e0] text-sm mt-1">Leave empty to allow any freelancer to apply</p>
+                <p className="text-muted text-sm mt-1">Leave empty to allow any freelancer to apply</p>
               </div>
             </div>
 
             {/* Milestones */}
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-[#f8f0f5]">Project Milestones</h2>
+                <h2 className="text-xl font-bold text-primary">Project Milestones</h2>
                 <button 
                   type="button"
                   onClick={addMilestone}
-                  className="bg-[#ff1493] text-white px-4 py-2 rounded-lg hover:bg-[#cc1076]"
+                  className="btn-primary"
                 >
                   Add Milestone
                 </button>
               </div>
 
               {milestones.map((milestone, index) => (
-                <div key={index} className="bg-[#660033] rounded-lg p-6 border border-[#800040]">
+                <div key={index} className="bg-background-secondary rounded-lg p-6 border border-secondary">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-[#f8f0f5] font-medium">Milestone {index + 1}</h3>
+                    <h3 className="text-primary font-medium">Milestone {index + 1}</h3>
                     {milestones.length > 1 && (
                       <button 
                         type="button"
                         onClick={() => removeMilestone(index)}
-                        className="text-[#ffb6c1] hover:text-[#f8f0f5]"
+                        className="text-accent hover:text-primary"
                       >
                         Remove
                       </button>
@@ -254,9 +254,9 @@ export default function CreateProject() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Description *</label>
+                      <label className="block text-muted text-sm font-medium mb-2">Description *</label>
                       <input 
-                        className="w-full bg-[#800040] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#99004d] focus:border-[#ff1493] focus:outline-none" 
+                        className="w-full bg-background text-primary px-4 py-3 rounded-lg border border-accent focus:border-primary focus:outline-none" 
                         placeholder="e.g., UI Components"
                         value={milestone.description}
                         onChange={(e) => updateMilestone(index, 'description', e.target.value)}
@@ -264,11 +264,11 @@ export default function CreateProject() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Amount (ETH) *</label>
+                      <label className="block text-muted text-sm font-medium mb-2">Amount (ETH) *</label>
                       <input 
                         type="number"
                         step="0.01"
-                        className="w-full bg-[#800040] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#99004d] focus:border-[#ff1493] focus:outline-none" 
+                        className="w-full bg-background text-primary px-4 py-3 rounded-lg border border-accent focus:border-primary focus:outline-none" 
                         placeholder="1.0"
                         value={milestone.amount}
                         onChange={(e) => updateMilestone(index, 'amount', e.target.value)}
@@ -276,10 +276,10 @@ export default function CreateProject() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Deadline *</label>
+                      <label className="block text-muted text-sm font-medium mb-2">Deadline *</label>
                       <input 
                         type="datetime-local"
-                        className="w-full bg-[#800040] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#99004d] focus:border-[#ff1493] focus:outline-none" 
+                        className="w-full bg-background text-primary px-4 py-3 rounded-lg border border-accent focus:border-primary focus:outline-none" 
                         value={milestone.deadline}
                         onChange={(e) => updateMilestone(index, 'deadline', e.target.value)}
                         required
@@ -290,22 +290,22 @@ export default function CreateProject() {
               ))}
 
               {/* Total Amount Display */}
-              <div className="bg-[#ff1493] bg-opacity-20 border border-[#ff69b4] rounded-lg p-4">
+              <div className="bg-primary bg-opacity-20 border border-secondary rounded-lg p-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-[#f0d0e0]">Total Project Amount:</span>
-                  <span className="text-[#ff69b4] font-bold text-lg">
+                  <span className="text-muted">Total Project Amount:</span>
+                  <span className="text-secondary font-bold text-lg">
                     {milestones.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0).toFixed(2)} ETH
                   </span>
                 </div>
                 <div className="flex justify-between items-center mt-2">
-                  <span className="text-[#f0d0e0] text-sm">Platform Fee (3%):</span>
-                  <span className="text-[#f0d0e0] text-sm">
+                  <span className="text-muted text-sm">Platform Fee (3%):</span>
+                  <span className="text-muted text-sm">
                     {(milestones.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0) * 0.03).toFixed(4)} ETH
                   </span>
                 </div>
-                <div className="flex justify-between items-center mt-2 pt-2 border-t border-[#ff69b4]">
-                  <span className="text-white font-medium">Total Required:</span>
-                  <span className="text-blue-400 font-bold">
+                <div className="flex justify-between items-center mt-2 pt-2 border-t border-secondary">
+                  <span className="text-primary font-medium">Total Required:</span>
+                  <span className="text-secondary font-bold">
                     {(milestones.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0) * 1.03).toFixed(4)} ETH
                   </span>
                 </div>
@@ -317,7 +317,7 @@ export default function CreateProject() {
               <button 
                 type="submit"
                 disabled={isSubmitting || isCreating}
-                className="flex-1 bg-[#ff1493] text-white px-6 py-4 rounded-lg hover:bg-[#cc1076] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
+                className="flex-1 btn-primary"
               >
                 {isSubmitting || isCreating ? (
                   <div className="flex items-center justify-center gap-2">
@@ -331,7 +331,7 @@ export default function CreateProject() {
               <button 
                 type="button"
                 onClick={() => router.push('/client')}
-                className="bg-[#660033] text-[#f8f0f5] px-6 py-4 rounded-lg hover:bg-[#800040] font-medium"
+                className="btn-outline flex-1"
               >
                 Cancel
               </button>

@@ -24,9 +24,9 @@ export default function ProjectApplications({ projectId }: ProjectApplicationsPr
 
   if (!applicationData) {
     return (
-      <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
-        <h3 className="text-xl font-bold text-[#f8f0f5] mb-4">Project Applications</h3>
-        <p className="text-[#f0d0e0]">Loading applications...</p>
+      <div className="card">
+        <h3 className="text-xl font-bold text-primary mb-4">Project Applications</h3>
+        <p className="text-muted">Loading applications...</p>
       </div>
     );
   }
@@ -35,9 +35,9 @@ export default function ProjectApplications({ projectId }: ProjectApplicationsPr
 
   if (freelancers.length === 0) {
     return (
-      <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
-        <h3 className="text-xl font-bold text-[#f8f0f5] mb-4">Project Applications</h3>
-        <p className="text-[#f0d0e0] text-center py-8">
+      <div className="card">
+        <h3 className="text-xl font-bold text-primary mb-4">Project Applications</h3>
+        <p className="text-muted text-center py-8">
           No applications yet. Share your project to attract freelancers!
         </p>
       </div>
@@ -46,23 +46,23 @@ export default function ProjectApplications({ projectId }: ProjectApplicationsPr
 
   return (
     <>
-      <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
-        <h3 className="text-xl font-bold text-[#f8f0f5] mb-4">
+      <div className="card">
+        <h3 className="text-xl font-bold text-primary mb-4">
           Project Applications ({freelancers.length})
         </h3>
         
         <div className="space-y-4">
           {freelancers.map((freelancer, index) => (
-            <div key={index} className="bg-[#660033] rounded-lg p-4 border border-[#800040]">
+            <div key={index} className="bg-background-secondary rounded-lg p-4 border border-secondary">
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
-                  <h4 className="text-[#f8f0f5] font-medium mb-1">
+                  <h4 className="text-primary font-medium mb-1">
                     Freelancer: {freelancer.slice(0, 6)}...{freelancer.slice(-4)}
                   </h4>
-                  <p className="text-[#f0d0e0] text-sm mb-2">
+                  <p className="text-muted text-sm mb-2">
                     Proposed Rate: {proposedRates[index].toString()} ETH
                   </p>
-                  <p className="text-[#f0d0e0] text-sm mb-2">
+                  <p className="text-muted text-sm mb-2">
                     Applied: {new Date(Number(appliedAt[index]) * 1000).toLocaleDateString()}
                   </p>
                   {isAccepted[index] && (
@@ -74,8 +74,8 @@ export default function ProjectApplications({ projectId }: ProjectApplicationsPr
               </div>
               
               <div className="mb-3">
-                <p className="text-[#f8f0f5] text-sm font-medium mb-1">Proposal:</p>
-                <p className="text-[#f0d0e0] text-sm bg-[#800040] p-2 rounded">
+                <p className="text-primary text-sm font-medium mb-1">Proposal:</p>
+                <p className="text-muted text-sm bg-background p-2 rounded">
                   {proposals[index]}
                 </p>
               </div>
@@ -83,7 +83,7 @@ export default function ProjectApplications({ projectId }: ProjectApplicationsPr
               <div className="flex gap-2">
                 <button
                   onClick={() => handleViewProfile(freelancer)}
-                  className="bg-[#ff1493] text-white px-4 py-2 rounded text-sm hover:bg-[#cc1076]"
+                  className="btn-primary"
                 >
                   View Profile
                 </button>

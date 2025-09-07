@@ -119,10 +119,10 @@ export default function FreelancerDashboard() {
     
     if (isLoading || !projectData) {
       return (
-        <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033] animate-pulse">
-          <div className="h-6 bg-[#660033] rounded mb-4"></div>
-          <div className="h-4 bg-[#660033] rounded mb-2"></div>
-          <div className="h-4 bg-[#660033] rounded"></div>
+        <div className="card animate-pulse">
+          <div className="h-6 bg-background-secondary rounded mb-4"></div>
+          <div className="h-4 bg-background-secondary rounded mb-2"></div>
+          <div className="h-4 bg-background-secondary rounded"></div>
         </div>
       );
     }
@@ -136,51 +136,51 @@ export default function FreelancerDashboard() {
     }
     
     return (
-      <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033] hover:border-[#ff1493] transition-colors">
+      <div className="card hover:border-primary transition-colors">
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h3 className="text-[#f8f0f5] font-bold text-lg">{description.slice(0, 60)}...</h3>
+              <h3 className="text-primary font-bold text-lg">{description.slice(0, 60)}...</h3>
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                 projectStatus === 'Active' ? 'bg-yellow-600 text-white' : 
                 projectStatus === 'Completed' ? 'bg-green-600 text-white' : 
-                projectStatus === 'Cancelled' ? 'bg-red-600 text-white' : 'bg-[#660033] text-white'
+                projectStatus === 'Cancelled' ? 'bg-red-600 text-white' : 'bg-background-secondary text-primary'
               }`}>
                 {projectStatus}
               </span>
             </div>
-            <div className="flex items-center gap-4 text-sm text-[#ffb6c1] mb-2">
+            <div className="flex items-center gap-4 text-sm text-accent mb-2">
               <span>📅 Started: {new Date(Number(createdAt) * 1000).toLocaleDateString()}</span>
               <span>👤 Client: {client.slice(0, 6)}...{client.slice(-4)}</span>
-              <span className="text-[#ff69b4]">✓ Assigned to You</span>
+              <span className="text-secondary">✓ Assigned to You</span>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-[#ff69b4] font-bold text-xl">{formatEther(totalAmount)} ETH</p>
-            <p className="text-[#ffb6c1] text-sm">Total Budget</p>
+            <p className="text-secondary font-bold text-xl">{formatEther(totalAmount)} ETH</p>
+            <p className="text-accent text-sm">Total Budget</p>
           </div>
         </div>
         
-        <p className="text-[#f0d0e0] mb-4 leading-relaxed">{description}</p>
+        <p className="text-muted mb-4 leading-relaxed">{description}</p>
         
         {/* Project Details */}
-        <div className="mb-4 bg-[#660033] rounded-lg p-3">
+        <div className="mb-4 bg-background-secondary rounded-lg p-3">
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
-              <span className="text-[#ffb6c1]">Project ID:</span>
-              <span className="text-[#f8f0f5] ml-2">#{projectId}</span>
+              <span className="text-accent">Project ID:</span>
+              <span className="text-primary ml-2">#{projectId}</span>
             </div>
             <div>
-              <span className="text-[#ffb6c1]">Status:</span>
+              <span className="text-accent">Status:</span>
               <span className={`ml-2 ${
-                projectStatus === 'Active' ? 'text-[#ffb6c1]' : 
+                projectStatus === 'Active' ? 'text-accent' : 
                 projectStatus === 'Completed' ? 'text-green-400' : 
-                projectStatus === 'Cancelled' ? 'text-red-400' : 'text-[#f8f0f5]'
+                projectStatus === 'Cancelled' ? 'text-red-400' : 'text-primary'
               }`}>{projectStatus}</span>
             </div>
             <div>
-              <span className="text-[#ffb6c1]">Milestones:</span>
-              <span className="text-[#f8f0f5] ml-2">{milestoneCount?.toString() || '0'}</span>
+              <span className="text-accent">Milestones:</span>
+              <span className="text-primary ml-2">{milestoneCount?.toString() || '0'}</span>
             </div>
           </div>
         </div>
@@ -189,17 +189,17 @@ export default function FreelancerDashboard() {
         <div className="flex gap-3">
           <button 
             onClick={() => router.push(`/milestones/${projectId}`)}
-            className="bg-[#ff1493] text-white px-6 py-2 rounded-lg hover:bg-[#cc1076] transition-colors flex-1"
+            className="btn-primary flex-1"
           >
             View Milestones
           </button>
           <button 
             onClick={() => router.push(`/milestones/${projectId}`)}
-            className="bg-[#ff69b4] text-white px-6 py-2 rounded-lg hover:bg-[#ff1493] transition-colors"
+            className="btn-secondary"
           >
             Submit Work
           </button>
-          <button className="bg-[#660033] text-[#f8f0f5] px-6 py-2 rounded-lg hover:bg-[#800040] transition-colors">
+          <button className="btn-outline">
             Contact Client
           </button>
         </div>
@@ -213,10 +213,10 @@ export default function FreelancerDashboard() {
     
     if (isLoading || !projectData) {
       return (
-        <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033] animate-pulse">
-          <div className="h-6 bg-[#660033] rounded mb-4"></div>
-          <div className="h-4 bg-[#660033] rounded mb-2"></div>
-          <div className="h-4 bg-[#660033] rounded"></div>
+        <div className="card animate-pulse">
+          <div className="h-6 bg-background-secondary rounded mb-4"></div>
+          <div className="h-4 bg-background-secondary rounded mb-2"></div>
+          <div className="h-4 bg-background-secondary rounded"></div>
         </div>
       );
     }
@@ -261,44 +261,44 @@ export default function FreelancerDashboard() {
     };
     
     return (
-      <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033] hover:border-[#ff1493] transition-colors">
+      <div className="card hover:border-primary transition-colors">
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h3 className="text-[#f8f0f5] font-bold text-lg">{description.slice(0, 60)}...</h3>
-              <span className="bg-[#ff69b4] text-white px-2 py-1 rounded text-xs font-medium">
+              <h3 className="text-primary font-bold text-lg">{description.slice(0, 60)}...</h3>
+              <span className="bg-secondary text-primary px-2 py-1 rounded text-xs font-medium">
                 {getCategoryName(category)}
               </span>
               {hasApplied && (
-                <span className="bg-[#ff1493] text-white px-2 py-1 rounded text-xs font-medium">
+                <span className="bg-primary text-primary px-2 py-1 rounded text-xs font-medium">
                   Applied ✓
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-4 text-sm text-[#ffb6c1] mb-2">
+            <div className="flex items-center gap-4 text-sm text-accent mb-2">
               <span>📅 {new Date(Number(createdAt) * 1000).toLocaleDateString()}</span>
               <span>👤 {client.slice(0, 6)}...{client.slice(-4)}</span>
-              <span className="text-[#ff69b4]">Open for Applications</span>
+              <span className="text-secondary">Open for Applications</span>
             </div>
           </div>
           <div className="text-right">
-            <p className="text-[#ff69b4] font-bold text-xl">{formatEther(totalAmount)} ETH</p>
-            <p className="text-[#ffb6c1] text-sm">Total Budget</p>
+            <p className="text-secondary font-bold text-xl">{formatEther(totalAmount)} ETH</p>
+            <p className="text-accent text-sm">Total Budget</p>
           </div>
         </div>
         
-        <p className="text-[#f0d0e0] mb-4 leading-relaxed">{description}</p>
+        <p className="text-muted mb-4 leading-relaxed">{description}</p>
         
         {/* Project Details */}
-        <div className="mb-4 bg-[#660033] rounded-lg p-3">
+        <div className="mb-4 bg-background-secondary rounded-lg p-3">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-[#ffb6c1]">Project ID:</span>
-              <span className="text-[#f8f0f5] ml-2">#{projectId}</span>
+              <span className="text-accent">Project ID:</span>
+              <span className="text-primary ml-2">#{projectId}</span>
             </div>
             <div>
-              <span className="text-[#ffb6c1]">Status:</span>
-              <span className="text-[#ff69b4] ml-2">{projectStatus}</span>
+              <span className="text-accent">Status:</span>
+              <span className="text-secondary ml-2">{projectStatus}</span>
             </div>
           </div>
         </div>
@@ -313,13 +313,13 @@ export default function FreelancerDashboard() {
             disabled={hasApplied || isApplying}
             className={`${
               hasApplied || isApplying
-                ? 'bg-[#33001a] cursor-not-allowed' 
-                : 'bg-[#ff1493] hover:bg-[#cc1076]'
-            } text-white px-6 py-2 rounded-lg font-medium transition-colors flex-1`}
+                ? 'bg-background-secondary cursor-not-allowed' 
+                : 'btn-primary'
+            } flex-1`}
           >
             {isApplying ? 'Applying...' : hasApplied ? 'Applied ✓' : 'Apply Now'}
           </button>
-          <button className="bg-[#660033] text-[#f8f0f5] px-4 py-2 rounded-lg hover:bg-[#800040] transition-colors">
+          <button className="btn-outline">
             🔖 Save
           </button>
         </div>
@@ -331,12 +331,12 @@ export default function FreelancerDashboard() {
     
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-[#4d0026] rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto border border-[#660033]">
+        <div className="card w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-[#f8f0f5]">Apply to Project #{selectedJob}</h3>
+            <h3 className="text-2xl font-bold text-primary">Apply to Project #{selectedJob}</h3>
             <button 
               onClick={() => setShowApplicationModal(false)}
-              className="text-[#ffb6c1] hover:text-[#f8f0f5] text-xl"
+              className="text-muted hover:text-primary text-xl"
             >
               ×
             </button>
@@ -347,14 +347,14 @@ export default function FreelancerDashboard() {
             handleApplyToJob(selectedJob);
           }} className="space-y-4">
             <div>
-              <label className="block text-[#f0d0e0] text-sm font-medium mb-2">
+              <label className="block text-muted text-sm font-medium mb-2">
                 Proposal *
               </label>
               <textarea 
                 required
                 value={applicationData.proposal}
                 onChange={(e) => setApplicationData({...applicationData, proposal: e.target.value})}
-                className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
+                className="w-full bg-background-secondary text-primary px-4 py-3 rounded-lg border border-secondary focus:border-primary focus:outline-none" 
                 rows={6}
                 placeholder="Describe your approach to this project, relevant experience, and why you're the best fit..."
               />
@@ -362,7 +362,7 @@ export default function FreelancerDashboard() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[#f0d0e0] text-sm font-medium mb-2">
+                <label className="block text-muted text-sm font-medium mb-2">
                   Proposed Rate (ETH) *
                 </label>
                 <input 
@@ -371,19 +371,19 @@ export default function FreelancerDashboard() {
                   required
                   value={applicationData.proposedRate}
                   onChange={(e) => setApplicationData({...applicationData, proposedRate: e.target.value})}
-                  className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
+                  className="w-full bg-background-secondary text-primary px-4 py-3 rounded-lg border border-secondary focus:border-primary focus:outline-none" 
                   placeholder="Your rate for this project"
                 />
               </div>
               <div>
-                <label className="block text-[#f0d0e0] text-sm font-medium mb-2">
+                <label className="block text-muted text-sm font-medium mb-2">
                   Estimated Timeline
                 </label>
                 <input 
                   type="text"
                   value={applicationData.estimatedTime}
                   onChange={(e) => setApplicationData({...applicationData, estimatedTime: e.target.value})}
-                  className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
+                  className="w-full bg-background-secondary text-primary px-4 py-3 rounded-lg border border-secondary focus:border-primary focus:outline-none" 
                   placeholder="e.g., 2 weeks, 1 month"
                 />
               </div>
@@ -395,16 +395,16 @@ export default function FreelancerDashboard() {
                 disabled={isApplying}
                 className={`flex-1 ${
                   isApplying 
-                    ? 'bg-[#33001a] text-[#f0d0e0] cursor-not-allowed' 
-                    : 'bg-[#ff1493] hover:bg-[#cc1076] text-white'
-                } py-3 rounded-lg font-medium transition-colors`}
+                    ? 'bg-background-secondary text-muted cursor-not-allowed' 
+                    : 'btn-primary'
+                } py-3 rounded-lg font-medium`}
               >
                 {isApplying ? 'Submitting Application...' : 'Submit Application'}
               </button>
               <button 
                 type="button"
                 onClick={() => setShowApplicationModal(false)}
-                className="flex-1 bg-[#660033] text-[#f8f0f5] py-3 rounded-lg hover:bg-[#800040] font-medium transition-colors"
+                className="btn-outline flex-1"
               >
                 Cancel
               </button>
@@ -418,11 +418,11 @@ export default function FreelancerDashboard() {
   const MyProjects = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-[#f8f0f5]">My Assigned Projects</h2>
+        <h2 className="text-2xl font-bold text-primary">My Assigned Projects</h2>
         <button 
           onClick={() => refetchAssigned()}
           disabled={isLoadingAssigned}
-          className="bg-[#ff1493] text-white px-4 py-2 rounded-lg hover:bg-[#cc1076] disabled:opacity-50"
+          className="btn-primary"
         >
           {isLoadingAssigned ? 'Loading...' : '🔄 Refresh'}
         </button>
@@ -430,13 +430,13 @@ export default function FreelancerDashboard() {
 
       {isLoadingAssigned ? (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
-          <p className="text-[#ffb6c1]">Loading your assigned projects...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary mx-auto mb-4"></div>
+          <p className="text-muted">Loading your assigned projects...</p>
         </div>
       ) : assignedProjectIds && assignedProjectIds.length > 0 ? (
         <div className="space-y-6">
-          <div className="bg-[#4d0026] rounded-lg p-4 border border-[#660033]">
-            <p className="text-[#f0d0e0]">
+          <div className="card">
+            <p className="text-muted">
               You have {assignedProjectIds.length} assigned project{assignedProjectIds.length !== 1 ? 's' : ''}
             </p>
           </div>
@@ -448,14 +448,14 @@ export default function FreelancerDashboard() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <div className="text-[#ffb6c1] text-6xl mb-4">📋</div>
-          <h3 className="text-[#f8f0f5] text-xl font-bold mb-2">No Assigned Projects Yet</h3>
-          <p className="text-[#f0d0e0] text-lg mb-6">
+          <div className="text-accent text-6xl mb-4">📋</div>
+          <h3 className="text-primary text-xl font-bold mb-2">No Assigned Projects Yet</h3>
+          <p className="text-muted text-lg mb-6">
             You haven't been assigned to any projects yet. Keep applying to available projects!
           </p>
           <button 
             onClick={() => setActiveTab('browse')}
-            className="bg-[#ff1493] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#cc1076]"
+            className="btn-primary"
           >
             Browse Available Projects
           </button>
@@ -475,13 +475,13 @@ export default function FreelancerDashboard() {
     return (
       <div className="space-y-6">
         {/* Search and Filter Header */}
-        <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
+        <div className="card">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-[#f8f0f5]">Browse Available Projects</h2>
+            <h2 className="text-2xl font-bold text-primary">Browse Available Projects</h2>
             <button 
               onClick={() => refetchProjects()}
               disabled={isLoadingAvailable}
-              className="bg-[#ff1493] text-white px-4 py-2 rounded-lg hover:bg-[#cc1076] disabled:opacity-50"
+              className="btn-primary"
             >
               {isLoadingAvailable ? 'Loading...' : '🔄 Refresh'}
             </button>
@@ -490,7 +490,7 @@ export default function FreelancerDashboard() {
           {/* Search and Filter Controls */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div className="md:col-span-2">
-              <label className="block text-[#f0d0e0] text-sm font-medium mb-2">
+              <label className="block text-muted text-sm font-medium mb-2">
                 Search Projects
               </label>
               <input
@@ -498,35 +498,35 @@ export default function FreelancerDashboard() {
                 value={searchFilters.search}
                 onChange={(e) => setSearchFilters({...searchFilters, search: e.target.value})}
                 placeholder="Search by title, description, or skills..."
-                className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-2 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none"
+                className="w-full bg-background-secondary text-primary px-4 py-2 rounded-lg border border-secondary focus:border-primary focus:outline-none"
               />
             </div>
             
             <div>
-              <label className="block text-[#f0d0e0] text-sm font-medium mb-2">
+              <label className="block text-muted text-sm font-medium mb-2">
                 Category
               </label>
               <select
                 value={searchFilters.category}
                 onChange={(e) => setSearchFilters({...searchFilters, category: e.target.value})}
-                className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-2 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none"
+                className="w-full bg-background-secondary text-primary px-4 py-2 rounded-lg border border-secondary focus:border-primary focus:outline-none"
               >
-                <option value="all" className="bg-[#4d0026]">All Categories</option>
-                <option value="web-development" className="bg-[#4d0026]">Web Development</option>
-                <option value="mobile-apps" className="bg-[#4d0026]">Mobile Apps</option>
-                <option value="blockchain" className="bg-[#4d0026]">Blockchain</option>
-                <option value="design" className="bg-[#4d0026]">Design</option>
-                <option value="marketing" className="bg-[#4d0026]">Marketing</option>
-                <option value="writing" className="bg-[#4d0026]">Writing</option>
-                <option value="data-science" className="bg-[#4d0026]">Data Science</option>
-                <option value="devops" className="bg-[#4d0026]">DevOps</option>
-                <option value="consulting" className="bg-[#4d0026]">Consulting</option>
-                <option value="other" className="bg-[#4d0026]">Other</option>
+                <option value="all" className="bg-background">All Categories</option>
+                <option value="web-development" className="bg-background">Web Development</option>
+                <option value="mobile-apps" className="bg-background">Mobile Apps</option>
+                <option value="blockchain" className="bg-background">Blockchain</option>
+                <option value="design" className="bg-background">Design</option>
+                <option value="marketing" className="bg-background">Marketing</option>
+                <option value="writing" className="bg-background">Writing</option>
+                <option value="data-science" className="bg-background">Data Science</option>
+                <option value="devops" className="bg-background">DevOps</option>
+                <option value="consulting" className="bg-background">Consulting</option>
+                <option value="other" className="bg-background">Other</option>
               </select>
             </div>
             
             <div>
-              <label className="block text-[#f0d0e0] text-sm font-medium mb-2">
+              <label className="block text-muted text-sm font-medium mb-2">
                 Budget Range (ETH)
               </label>
               <div className="flex gap-2">
@@ -536,7 +536,7 @@ export default function FreelancerDashboard() {
                   placeholder="Min"
                   value={searchFilters.budgetMin}
                   onChange={(e) => setSearchFilters({...searchFilters, budgetMin: e.target.value})}
-                  className="w-full bg-[#660033] text-[#f8f0f5] px-2 py-2 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none text-sm"
+                  className="w-full bg-background-secondary text-primary px-2 py-2 rounded-lg border border-secondary focus:border-primary focus:outline-none text-sm"
                 />
                 <input
                   type="number"
@@ -544,19 +544,19 @@ export default function FreelancerDashboard() {
                   placeholder="Max"
                   value={searchFilters.budgetMax}
                   onChange={(e) => setSearchFilters({...searchFilters, budgetMax: e.target.value})}
-                  className="w-full bg-[#660033] text-[#f8f0f5] px-2 py-2 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none text-sm"
+                  className="w-full bg-background-secondary text-primary px-2 py-2 rounded-lg border border-secondary focus:border-primary focus:outline-none text-sm"
                 />
               </div>
             </div>
           </div>
           
           <div className="flex items-center justify-between">
-            <p className="text-[#f0d0e0]">
+            <p className="text-muted">
               Showing {availableProjectIds?.length || 0} available projects
             </p>
             <button 
               onClick={() => setSearchFilters({ search: '', category: 'all', budgetMin: '', budgetMax: '' })}
-              className="text-[#ff69b4] hover:text-[#ff1493]"
+              className="text-secondary hover:text-primary"
             >
               Clear Filters
             </button>
@@ -566,9 +566,9 @@ export default function FreelancerDashboard() {
         {/* Project Listings */}
         <div className="space-y-4">
           {isLoadingAvailable ? (
-            <div className="bg-[#4d0026] rounded-lg p-12 text-center border border-[#660033]">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
-              <p className="text-[#f0d0e0]">Loading available projects...</p>
+            <div className="card text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary mx-auto mb-4"></div>
+              <p className="text-muted">Loading available projects...</p>
             </div>
           ) : availableProjectIds && availableProjectIds.length > 0 ? (
             <div className="space-y-4">
@@ -577,12 +577,12 @@ export default function FreelancerDashboard() {
               ))}
             </div>
           ) : (
-            <div className="bg-[#4d0026] rounded-lg p-12 text-center border border-[#660033]">
-              <h3 className="text-[#f8f0f5] text-xl font-bold mb-2">No Projects Available</h3>
-              <p className="text-[#f0d0e0] mb-4">
+            <div className="card text-center">
+              <h3 className="text-primary text-xl font-bold mb-2">No Projects Available</h3>
+              <p className="text-muted mb-4">
                 There are currently no open projects available for applications.
               </p>
-              <p className="text-[#ffb6c1] text-sm">
+              <p className="text-accent text-sm">
                 Check back later or refresh to see new opportunities!
               </p>
             </div>
@@ -596,10 +596,10 @@ export default function FreelancerDashboard() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
-          <p className="text-[#f0d0e0]">Please connect your wallet to access the freelancer dashboard.</p>
+          <h1 className="text-2xl font-bold text-primary mb-4">Access Denied</h1>
+          <p className="text-muted">Please connect your wallet to access the freelancer dashboard.</p>
         </div>
       </div>
     );
@@ -607,10 +607,10 @@ export default function FreelancerDashboard() {
 
   if (isCheckingFreelancer) {
     return (
-      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
-          <p className="text-[#f0d0e0]">Verifying freelancer status...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary mx-auto mb-4"></div>
+          <p className="text-muted">Verifying freelancer status...</p>
         </div>
       </div>
     );
@@ -618,13 +618,13 @@ export default function FreelancerDashboard() {
 
   if (!isFreelancer) {
     return (
-      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
-          <p className="text-[#f0d0e0] mb-6">You must be registered as a freelancer to access this dashboard.</p>
+          <h1 className="text-2xl font-bold text-primary mb-4">Access Denied</h1>
+          <p className="text-muted mb-6">You must be registered as a freelancer to access this dashboard.</p>
           <button 
             onClick={() => router.push('/')}
-            className="bg-[#ff1493] text-white px-6 py-3 rounded-lg hover:bg-[#cc1076]"
+            className="btn-primary"
           >
             Go Back to Home
           </button>
@@ -634,19 +634,19 @@ export default function FreelancerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1a000d] p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-[#f8f0f5]">Freelancer Dashboard</h1>
-            <p className="text-[#ffb6c1]">Manage your projects and find new opportunities.</p>
+            <h1 className="text-3xl font-bold text-primary">Freelancer Dashboard</h1>
+            <p className="text-accent">Manage your projects and find new opportunities.</p>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-[#f8f0f5]">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
+            <span className="text-primary">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
             <button 
               onClick={() => router.push('/')}
-              className="bg-[#ff1493] text-white px-4 py-2 rounded hover:bg-[#cc1076]"
+              className="btn-primary"
             >
               Back to Home
             </button>
@@ -664,8 +664,8 @@ export default function FreelancerDashboard() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 rounded-lg font-semibold ${
                 activeTab === tab.id
-                  ? 'bg-[#ff1493] text-white'
-                  : 'bg-[#4d0026] text-[#f8f0f5] hover:bg-[#660033]'
+                  ? 'bg-primary text-primary'
+                  : 'bg-background-secondary text-primary hover:bg-background'
               }`}
             >
               {tab.label}

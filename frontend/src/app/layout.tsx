@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "BlockDAG Starter Kit",
-  description: "A starter kit for building on BlockDAG",
+  title: "FreelanceDAO - Decentralized Freelance Platform",
+  description: "The First Fully Decentralized Freelance Platform on BlockDAG",
 };
 
 export default function RootLayout({
@@ -17,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body style={{ fontFamily: 'Microsoft Sans Serif, Arial, sans-serif' }}>
         <Providers>{children}</Providers>
       </body>
     </html>

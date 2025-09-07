@@ -58,13 +58,13 @@ export default function FreelancerProfile({ freelancerAddress, isOpen, onClose }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="card max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Freelancer Profile</h2>
+          <h2 className="text-2xl font-bold text-primary">Freelancer Profile</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white text-2xl"
+            className="text-muted hover:text-primary text-2xl"
           >
             ×
           </button>
@@ -73,20 +73,20 @@ export default function FreelancerProfile({ freelancerAddress, isOpen, onClose }
         {/* Profile Information */}
         {userProfile && (
           <div className="mb-6">
-            <div className="bg-gray-700 rounded-lg p-4 mb-4">
-              <h3 className="text-xl font-semibold text-white mb-2">{userProfile[1]}</h3>
-              <p className="text-gray-300 text-sm mb-2">Email: {userProfile[2]}</p>
-              <p className="text-gray-300 mb-4">{userProfile[3]}</p>
+            <div className="bg-background-secondary rounded-lg p-4 mb-4">
+              <h3 className="text-xl font-semibold text-primary mb-2">{userProfile[1]}</h3>
+              <p className="text-muted text-sm mb-2">Email: {userProfile[2]}</p>
+              <p className="text-muted mb-4">{userProfile[3]}</p>
               
               {/* Skills */}
               {userProfile[4] && userProfile[4].length > 0 && (
                 <div className="mb-4">
-                  <h4 className="text-white font-medium mb-2">Skills:</h4>
+                  <h4 className="text-primary font-medium mb-2">Skills:</h4>
                   <div className="flex flex-wrap gap-2">
                     {userProfile[4].map((skill, index) => (
                       <span
                         key={index}
-                        className="bg-blue-600 text-white px-2 py-1 rounded text-sm"
+                        className="bg-secondary text-primary px-2 py-1 rounded text-sm"
                       >
                         {skill}
                       </span>
@@ -97,13 +97,13 @@ export default function FreelancerProfile({ freelancerAddress, isOpen, onClose }
 
               {/* Reputation */}
               <div className="flex items-center gap-4">
-                <div className="text-white">
+                <div className="text-primary">
                   <span className="font-medium">Reputation: </span>
                   <span className="text-yellow-400 text-lg">
                     {formatReputation(userReputation)} ⭐
                   </span>
                 </div>
-                <div className="text-gray-300 text-sm">
+                <div className="text-muted text-sm">
                   Member since: {userProfile[6] ? formatDate(userProfile[6]) : 'Unknown'}
                 </div>
               </div>
@@ -112,30 +112,30 @@ export default function FreelancerProfile({ freelancerAddress, isOpen, onClose }
         )}
 
         {/* Ratings Section */}
-        <div className="bg-gray-700 rounded-lg p-4">
-          <h3 className="text-xl font-semibold text-white mb-4">
+        <div className="bg-background-secondary rounded-lg p-4">
+          <h3 className="text-xl font-semibold text-primary mb-4">
             Ratings & Reviews ({userRatings ? userRatings.length : 0})
           </h3>
           
           {userRatings && userRatings.length > 0 ? (
             <div className="space-y-4 max-h-60 overflow-y-auto">
               {userRatings.map((rating: Rating, index: number) => (
-                <div key={index} className="bg-gray-600 rounded-lg p-3">
+                <div key={index} className="bg-background rounded-lg p-3">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <span className="text-yellow-400 text-lg">
                         {renderStars(rating.score)}
                       </span>
-                      <span className="text-white font-medium">
+                      <span className="text-primary font-medium">
                         {rating.score}/5
                       </span>
                     </div>
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-muted text-sm">
                       {formatDate(rating.timestamp)}
                     </span>
                   </div>
                   {rating.comment && (
-                    <p className="text-gray-300 text-sm italic">
+                    <p className="text-muted text-sm italic">
                       "{rating.comment}"
                     </p>
                   )}
@@ -143,7 +143,7 @@ export default function FreelancerProfile({ freelancerAddress, isOpen, onClose }
               ))}
             </div>
           ) : (
-            <p className="text-gray-400 text-center py-8">
+            <p className="text-muted text-center py-8">
               No ratings yet. Be the first to work with this freelancer!
             </p>
           )}
@@ -153,7 +153,7 @@ export default function FreelancerProfile({ freelancerAddress, isOpen, onClose }
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+            className="btn-primary"
           >
             Close
           </button>

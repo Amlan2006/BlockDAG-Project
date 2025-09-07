@@ -60,7 +60,7 @@ export default function RatingModal({
             className={`text-3xl transition-colors ${
               star <= (hoveredRating || rating)
                 ? 'text-yellow-400'
-                : 'text-[#f0d0e0]'
+                : 'text-muted'
             }`}
             onClick={() => setRating(star)}
             onMouseEnter={() => setHoveredRating(star)}
@@ -77,28 +77,28 @@ export default function RatingModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#4d0026] rounded-lg p-6 max-w-md w-full mx-4 border border-[#660033]">
-        <h3 className="text-xl font-bold text-[#f8f0f5] mb-4">Rate Freelancer</h3>
+      <div className="card max-w-md w-full mx-4">
+        <h3 className="text-xl font-bold text-primary mb-4">Rate Freelancer</h3>
         
         <div className="mb-4">
-          <p className="text-[#f0d0e0] mb-3">
+          <p className="text-muted mb-3">
             How was your experience working with this freelancer?
           </p>
           
           <div className="text-center">
-            <p className="text-[#f8f0f5] mb-2">Rating: {rating}/5</p>
+            <p className="text-primary mb-2">Rating: {rating}/5</p>
             {renderStarRating()}
           </div>
         </div>
 
         <div className="mb-6">
-          <label className="block text-[#f8f0f5] font-medium mb-2">
+          <label className="block text-primary font-medium mb-2">
             Comment (optional)
           </label>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="w-full bg-[#660033] text-[#f8f0f5] px-3 py-2 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none"
+            className="w-full bg-background-secondary text-primary px-3 py-2 rounded-lg border border-secondary focus:border-primary focus:outline-none"
             rows={3}
             placeholder="Share your experience working with this freelancer..."
           />
@@ -107,14 +107,14 @@ export default function RatingModal({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 bg-[#660033] text-[#f8f0f5] py-2 px-4 rounded-lg hover:bg-[#800040]"
+            className="btn-outline flex-1"
             disabled={isPending || isConfirming}
           >
             Cancel
           </button>
           <button
             onClick={handleSubmitRating}
-            className="flex-1 bg-[#ff1493] text-white py-2 px-4 rounded-lg hover:bg-[#cc1076] disabled:opacity-50"
+            className="btn-primary flex-1"
             disabled={isPending || isConfirming}
           >
             {isPending || isConfirming ? 'Submitting...' : 'Submit Rating'}
