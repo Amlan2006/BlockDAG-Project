@@ -11,18 +11,89 @@
 </div>
 
 
-# Create BlockDAG App
-A lightweight CLI tool to quickly scaffold BlockDAG blockchain applications with a clean, production-ready structure.
+# BlockDAG Freelance Platform  
 
+A Decentralized Marketplace for Secure Client-Freelancer Interactions on the Blockchain.  
 
-## Quick Start
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)  
+![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)  
+![Powered by Wagmi](https://img.shields.io/badge/Powered%20by-Wagmi-blueviolet)  
 
-```bash
-npx create-blockdag-dapp@latest
-```
+---
 
+## Table of Contents
+- [About The Project](#about-the-project)  
+- [Key Features](#key-features)  
+- [Architecture Overview](#architecture-overview)  
+- [How It Works: Core Concepts](#how-it-works-core-concepts)  
+  - [User Profiles & Roles](#1-user-profiles--roles)  
+  - [Projects](#2-projects)  
+  - [Milestones](#3-milestones)  
+- [Technology Stack](#technology-stack)  
+- [Getting Started](#getting-started)  
+  - [Prerequisites](#prerequisites)  
+  - [Installation](#installation)  
+- [Platform Walkthrough](#platform-walkthrough)  
+  - [The Client Journey](#the-client-journey)  
+  - [The Freelancer Journey](#the-freelancer-journey)  
+- [Smart Contract Deep Dive](#smart-contract-deep-dive)  
+  - [UserRegistry Contract](#userregistry-contract)  
+  - [FreelanceEscrow Contract](#freelanceescrow-contract)  
+- [Contributing](#contributing)  
+- [License](#license)  
+- [Contact](#contact)  
 
-This will guide you through creating a new BlockDAG application with a simple interactive prompt.
+---
+
+## About The Project  
+
+Traditional freelance platforms act as centralized middlemen. They charge fees, delay payments, and often enforce opaque rules. Disputes lack transparency, and users depend entirely on the platform’s control.  
+
+The **BlockDAG Freelance Platform** eliminates this dependency by shifting everything on-chain:  
+
+- **Trustless Agreements** – Smart contracts enforce project terms automatically.  
+- **Secure Escrow** – Funds are locked in escrow and only released upon approval.  
+- **Transparent Identity** – Immutable on-chain record of profiles and reputations.  
+- **Decentralized Control** – No company controlling funds or rules. The code is the law.  
+
+This creates a fair marketplace where your wallet is your identity, your work is verified, and your payment is guaranteed.  
+
+---
+
+## Key Features  
+
+- **Decentralized User Profiles**: Manage professional identity on-chain.  
+- **Role-Based Access Control**: Register as Client, Freelancer, or Both.  
+- **On-Chain Project Management**: Post jobs and manage them directly on blockchain.  
+- **Secure Escrow Payments**: Funds locked in smart contracts at project start.  
+- **Milestone-Based Workflow**: Smaller, individually payable tasks.  
+- **Public Reputation System**: Immutable on-chain rating system.  
+
+---
+
+## Architecture Overview  
+
+The system is built on three layers:  
+
+```mermaid
+graph TD
+    subgraph Browser
+        A[Frontend App <br> (Next.js, React, Wagmi)]
+    end
+
+    subgraph Blockchain (EVM)
+        C[UserRegistry Contract <br> (Manages User Identities & Roles)]
+        D[FreelanceEscrow Contract <br> (Manages Projects, Milestones, Payments)]
+    end
+
+    A -- "Read/Write via Wagmi Hooks" --> B{Contract Interaction Layer};
+    B -- "Calls Functions on" --> C;
+    B -- "Calls Functions on" --> D;
+    D -- "Verifies User Role" --> C;
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#333,stroke-width:2px
+    style D fill:#bbf,stroke:#333,stroke-width:2px
 
 
 ## Features
