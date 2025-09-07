@@ -4,8 +4,8 @@ import { FreelanceEscrowABI, UserRegistryABI } from "./abi";
 export const CONTRACT_ADDRESSES = {
   // Anvil local network (Chain ID: 31337)
   31337: {
-    FreelanceEscrow: "0x2E983A1Ba5e8b38AAAeC4B440B9dDcFBf72E15d1",
-    UserRegistry: "0x663F3ad617193148711d28f5334eE4Ed07016602"
+    FreelanceEscrow: "0x71C95911E9a5D330f4D621842EC243EE1343292e",
+    UserRegistry: "0x8464135c8F25Da09e49BC8782676a84730C318bC"
   },
   // BlockDAG Testnet (Chain ID: 1043)
   1043: {

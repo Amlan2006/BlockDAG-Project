@@ -47,44 +47,44 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#070E1B] p-6">
+    <main className="min-h-screen bg-[#1a000d] p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-4 text-center">
+        <h1 className="text-4xl font-bold text-[#f8f0f5] mb-4 text-center">
           💼 FreelanceDAO
         </h1>
-        <p className="text-xl text-gray-400 text-center mb-8">
+        <p className="text-xl text-[#f0d0e0] text-center mb-8">
           The First Fully Decentralized Freelance Platform on BlockDAG
         </p>
         
         {/* Wallet Connection */}
-        <div className="bg-gray-800 rounded-lg p-6 mb-8">
+        <div className="bg-[#4d0026] rounded-lg p-6 mb-8 border border-[#660033]">
           {isConnected ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-white">Connected: {address?.slice(0, 6)}...{address?.slice(-4)}</span>
+                <div className="w-3 h-3 bg-[#ff69b4] rounded-full"></div>
+                <span className="text-[#f8f0f5]">Connected: {address?.slice(0, 6)}...{address?.slice(-4)}</span>
                 {isLoading ? (
                   <span className="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm">
                     ⏳ Checking registration...
                   </span>
                 ) : isRegistered && userProfile ? (
                   <div className="flex items-center space-x-2">
-                    <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
+                    <span className="bg-[#ff1493] text-white px-3 py-1 rounded-full text-sm">
                       ✓ Registered as {formatUserType(userProfile[0])}
                     </span>
-                    <span className="text-gray-300 text-sm">
+                    <span className="text-[#f0d0e0] text-sm">
                       {userProfile[1]} {/* name */}
                     </span>
                   </div>
                 ) : (
-                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                  <span className="bg-[#ff69b4] text-white px-3 py-1 rounded-full text-sm">
                     📝 Not registered
                   </span>
                 )}
               </div>
               <button
                 onClick={() => disconnect()}
-                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                className="bg-[#ff1493] text-white px-4 py-2 rounded hover:bg-[#cc1076]"
               >
                 Disconnect
               </button>
@@ -92,7 +92,7 @@ export default function Home() {
           ) : (
             <div className="text-center">
               <ConnectButton />
-              <p className="text-gray-400 mt-2">Connect your wallet to get started</p>
+              <p className="text-[#f0d0e0] mt-2">Connect your wallet to get started</p>
             </div>
           )}
         </div>
@@ -101,10 +101,10 @@ export default function Home() {
           <>
             {/* Role Selection */}
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">
+              <h2 className="text-2xl font-bold text-[#f8f0f5] mb-4">
                 {isRegistered ? "Choose Your Dashboard" : "How would you like to get started?"}
               </h2>
-              <p className="text-gray-400 mb-8">
+              <p className="text-[#f0d0e0] mb-8">
                 {isRegistered 
                   ? "Access your personalized dashboard" 
                   : "Join thousands of professionals in the decentralized economy"
@@ -114,13 +114,13 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {/* Client Card */}
-              <div className="bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl p-8 text-center hover:transform hover:scale-105 transition-all duration-200">
+              <div className="bg-gradient-to-br from-[#4d0026] to-[#660033] rounded-xl p-8 text-center hover:transform hover:scale-105 transition-all duration-200 border border-[#800040]">
                 <div className="text-6xl mb-4">👔</div>
-                <h3 className="text-2xl font-bold text-white mb-4">I'm a Client</h3>
-                <p className="text-blue-100 mb-6">
+                <h3 className="text-2xl font-bold text-[#f8f0f5] mb-4">I'm a Client</h3>
+                <p className="text-[#f0d0e0] mb-6">
                   I want to hire talented freelancers for my projects with secure, milestone-based payments
                 </p>
-                <ul className="text-blue-100 text-sm space-y-2 mb-6">
+                <ul className="text-[#f0d0e0] text-sm space-y-2 mb-6">
                   <li>✓ Post projects with custom milestones</li>
                   <li>✓ Secure escrow payments</li>
                   <li>✓ Access to verified freelancers</li>
@@ -131,25 +131,25 @@ export default function Home() {
                   disabled={isRegistered && userProfile && formatUserType(userProfile[0]) === 'Freelancer'}
                   className={`w-full px-6 py-3 rounded-lg font-semibold transition-colors ${
                     isRegistered && userProfile && formatUserType(userProfile[0]) === 'Freelancer'
-                      ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                      : 'bg-white text-blue-700 hover:bg-blue-50'
+                      ? 'bg-[#33001a] text-[#f0d0e0] cursor-not-allowed'
+                      : 'bg-[#f8f0f5] text-[#4d0026] hover:bg-[#ffb6c1]'
                   }`}
                 >
                   {isRegistered ? "Go to Client Dashboard" : "Join as Client"}
                 </button>
                 {isRegistered && userProfile && formatUserType(userProfile[0]) === 'Freelancer' && (
-                  <p className="text-blue-200 text-xs mt-2">You are registered as a Freelancer</p>
+                  <p className="text-[#f0d0e0] text-xs mt-2">You are registered as a Freelancer</p>
                 )}
               </div>
 
               {/* Freelancer Card */}
-              <div className="bg-gradient-to-br from-green-900 to-green-700 rounded-xl p-8 text-center hover:transform hover:scale-105 transition-all duration-200">
+              <div className="bg-gradient-to-br from-[#660033] to-[#800040] rounded-xl p-8 text-center hover:transform hover:scale-105 transition-all duration-200 border border-[#99004d]">
                 <div className="text-6xl mb-4">💻</div>
-                <h3 className="text-2xl font-bold text-white mb-4">I'm a Freelancer</h3>
-                <p className="text-green-100 mb-6">
+                <h3 className="text-2xl font-bold text-[#f8f0f5] mb-4">I'm a Freelancer</h3>
+                <p className="text-[#f0d0e0] mb-6">
                   I want to offer my skills and work on exciting projects with guaranteed payments
                 </p>
-                <ul className="text-green-100 text-sm space-y-2 mb-6">
+                <ul className="text-[#f0d0e0] text-sm space-y-2 mb-6">
                   <li>✓ Browse available projects</li>
                   <li>✓ Build on-chain reputation</li>
                   <li>✓ Instant milestone payments</li>
@@ -160,24 +160,24 @@ export default function Home() {
                   disabled={isRegistered && userProfile && formatUserType(userProfile[0]) === 'Client'}
                   className={`w-full px-6 py-3 rounded-lg font-semibold transition-colors ${
                     isRegistered && userProfile && formatUserType(userProfile[0]) === 'Client'
-                      ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
-                      : 'bg-white text-green-700 hover:bg-green-50'
+                      ? 'bg-[#33001a] text-[#f0d0e0] cursor-not-allowed'
+                      : 'bg-[#f8f0f5] text-[#660033] hover:bg-[#ffb6c1]'
                   }`}
                 >
                   {isRegistered ? "Go to Freelancer Dashboard" : "Join as Freelancer"}
                 </button>
                 {isRegistered && userProfile && formatUserType(userProfile[0]) === 'Client' && (
-                  <p className="text-green-200 text-xs mt-2">You are registered as a Client</p>
+                  <p className="text-[#f0d0e0] text-xs mt-2">You are registered as a Client</p>
                 )}
               </div>
             </div>
 
             {!isRegistered && (
               <div className="text-center mt-8">
-                <p className="text-gray-400 mb-4">Want to do both?</p>
+                <p className="text-[#f0d0e0] mb-4">Want to do both?</p>
                 <button 
                   onClick={() => router.push('/register?role=both')}
-                  className="bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                  className="bg-[#cc1076] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#ff1493] transition-colors"
                 >
                   Register as Both Client & Freelancer
                 </button>
@@ -187,58 +187,58 @@ export default function Home() {
         ) : isConnected && isLoading ? (
           /* Loading State */
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading your registration status...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
+            <p className="text-[#f0d0e0]">Loading your registration status...</p>
           </div>
         ) : (
           /* Welcome Section for Non-Connected Users */
           <div className="text-center">
             <div className="max-w-4xl mx-auto mb-12">
-              <h2 className="text-3xl font-bold text-white mb-6">Why Choose FreelanceDAO?</h2>
+              <h2 className="text-3xl font-bold text-[#f8f0f5] mb-6">Why Choose FreelanceDAO?</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="bg-gray-800 rounded-lg p-6">
+                <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
                   <div className="text-4xl mb-4">🔒</div>
-                  <h3 className="text-xl font-bold text-white mb-3">Secure Escrow</h3>
-                  <p className="text-gray-400">
-                    Smart contracts hold funds safely until milestones are completed. No risk of non-payment.
+                  <h3 className="text-xl font-bold text-[#f8f0f5] mb-2">Secure Payments</h3>
+                  <p className="text-[#f0d0e0]">
+                    Funds are held in smart contract escrow until work is completed and approved
                   </p>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-6">
+                <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
                   <div className="text-4xl mb-4">⚡</div>
-                  <h3 className="text-xl font-bold text-white mb-3">Fast & Cheap</h3>
-                  <p className="text-gray-400">
-                    BlockDAG's speed enables instant payments with minimal fees. No waiting, no high costs.
+                  <h3 className="text-xl font-bold text-[#f8f0f5] mb-2">Instant Settlement</h3>
+                  <p className="text-[#f0d0e0]">
+                    No more waiting weeks for payments. Freelancers get paid immediately upon approval
                   </p>
                 </div>
-                <div className="bg-gray-800 rounded-lg p-6">
-                  <div className="text-4xl mb-4">🌟</div>
-                  <h3 className="text-xl font-bold text-white mb-3">On-Chain Reputation</h3>
-                  <p className="text-gray-400">
-                    Build a verifiable reputation that follows you across all Web3 platforms.
+                <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
+                  <div className="text-4xl mb-4">🌐</div>
+                  <h3 className="text-xl font-bold text-[#f8f0f5] mb-2">Global Access</h3>
+                  <p className="text-[#f0d0e0]">
+                    Connect with talent and clients worldwide without geographic restrictions
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Stats Section */}
-            <div className="bg-gray-800 rounded-lg p-8 mb-12">
-              <h3 className="text-2xl font-bold text-white mb-6 text-center">Platform Statistics</h3>
+            {/* Platform Stats */}
+            <div className="bg-[#4d0026] rounded-lg p-8 mb-8 border border-[#660033]">
+              <h2 className="text-2xl font-bold text-[#f8f0f5] text-center mb-6">Platform Statistics</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-400">1,240+</div>
-                  <div className="text-gray-400">Active Users</div>
+                  <div className="text-3xl font-bold text-[#ff1493] mb-2">1,247</div>
+                  <div className="text-[#f0d0e0]">Active Users</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-green-400">850+</div>
-                  <div className="text-gray-400">Projects Completed</div>
+                  <div className="text-3xl font-bold text-[#ff1493] mb-2">892</div>
+                  <div className="text-[#f0d0e0]">Projects Completed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-yellow-400">120+ ETH</div>
-                  <div className="text-gray-400">Total Paid Out</div>
+                  <div className="text-3xl font-bold text-[#ff1493] mb-2">2,456 ETH</div>
+                  <div className="text-[#f0d0e0]">Total Paid Out</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-400">4.9⭐</div>
-                  <div className="text-gray-400">Average Rating</div>
+                  <div className="text-3xl font-bold text-[#ff1493] mb-2">4.8 ⭐</div>
+                  <div className="text-[#f0d0e0]">Average Rating</div>
                 </div>
               </div>
             </div>

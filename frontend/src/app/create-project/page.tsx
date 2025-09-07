@@ -100,10 +100,10 @@ export default function CreateProject() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
-          <p className="text-gray-400">Please connect your wallet to create a project.</p>
+          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
+          <p className="text-[#f0d0e0]">Please connect your wallet to create a project.</p>
         </div>
       </div>
     );
@@ -111,10 +111,10 @@ export default function CreateProject() {
 
   if (isCheckingClient) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Verifying client status...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
+          <p className="text-[#f0d0e0]">Verifying client status...</p>
         </div>
       </div>
     );
@@ -122,13 +122,13 @@ export default function CreateProject() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
-          <p className="text-gray-400 mb-6">You must be registered as a client to create projects.</p>
+          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
+          <p className="text-[#f0d0e0] mb-6">You must be registered as a client to create projects.</p>
           <button 
             onClick={() => router.push('/')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+            className="bg-[#ff1493] text-white px-6 py-3 rounded-lg hover:bg-[#cc1076]"
           >
             Go Back to Home
           </button>
@@ -138,23 +138,23 @@ export default function CreateProject() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070E1B] p-6">
+    <div className="min-h-screen bg-[#1a000d] p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">Create New Project</h1>
-            <p className="text-gray-400">Post a project and hire talented freelancers</p>
+            <h1 className="text-3xl font-bold text-[#f8f0f5]">Create New Project</h1>
+            <p className="text-[#f0d0e0]">Post a project and hire talented freelancers</p>
           </div>
           <button 
             onClick={() => router.push('/client')}
-            className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+            className="bg-[#660033] text-[#f8f0f5] px-4 py-2 rounded hover:bg-[#800040]"
           >
             Back to Dashboard
           </button>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-8">
+        <div className="bg-[#4d0026] rounded-lg p-8 border border-[#660033]">
           <form onSubmit={handleSubmit} className="space-y-8">
             {error && (
               <div className="bg-red-600/20 border border-red-600 rounded-lg p-4">
@@ -170,13 +170,13 @@ export default function CreateProject() {
 
             {/* Basic Project Info */}
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-white">Project Details</h2>
+              <h2 className="text-xl font-bold text-[#f8f0f5]">Project Details</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">Project Title *</label>
+                  <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Project Title *</label>
                   <input 
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                    className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                     placeholder="e.g., React Dashboard Development"
                     value={formData.title}
                     onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -184,26 +184,26 @@ export default function CreateProject() {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">Category</label>
+                  <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Category</label>
                   <select 
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none"
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
                   >
-                    <option value="">Select category</option>
-                    <option value="web-development">Web Development</option>
-                    <option value="smart-contracts">Smart Contracts</option>
-                    <option value="mobile-apps">Mobile Apps</option>
-                    <option value="ui-ux">UI/UX Design</option>
-                    <option value="auditing">Security Auditing</option>
+                    <option value="" className="bg-[#4d0026]">Select category</option>
+                    <option value="web-development" className="bg-[#4d0026]">Web Development</option>
+                    <option value="smart-contracts" className="bg-[#4d0026]">Smart Contracts</option>
+                    <option value="mobile-apps" className="bg-[#4d0026]">Mobile Apps</option>
+                    <option value="ui-ux" className="bg-[#4d0026]">UI/UX Design</option>
+                    <option value="auditing" className="bg-[#4d0026]">Security Auditing</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2">Project Description *</label>
+                <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Project Description *</label>
                 <textarea 
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                  className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                   rows={6}
                   placeholder="Describe your project requirements, objectives, and any specific technologies needed..."
                   value={formData.description}
@@ -213,39 +213,39 @@ export default function CreateProject() {
               </div>
 
               <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2">Specific Freelancer (optional)</label>
+                <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Specific Freelancer (optional)</label>
                 <input 
-                  className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                  className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                   placeholder="0x... (leave empty for open applications)"
                   value={formData.freelancer}
                   onChange={(e) => setFormData({...formData, freelancer: e.target.value})}
                 />
-                <p className="text-gray-500 text-sm mt-1">Leave empty to allow any freelancer to apply</p>
+                <p className="text-[#f0d0e0] text-sm mt-1">Leave empty to allow any freelancer to apply</p>
               </div>
             </div>
 
             {/* Milestones */}
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white">Project Milestones</h2>
+                <h2 className="text-xl font-bold text-[#f8f0f5]">Project Milestones</h2>
                 <button 
                   type="button"
                   onClick={addMilestone}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="bg-[#ff1493] text-white px-4 py-2 rounded-lg hover:bg-[#cc1076]"
                 >
                   Add Milestone
                 </button>
               </div>
 
               {milestones.map((milestone, index) => (
-                <div key={index} className="bg-gray-700 rounded-lg p-6">
+                <div key={index} className="bg-[#660033] rounded-lg p-6 border border-[#800040]">
                   <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-white font-medium">Milestone {index + 1}</h3>
+                    <h3 className="text-[#f8f0f5] font-medium">Milestone {index + 1}</h3>
                     {milestones.length > 1 && (
                       <button 
                         type="button"
                         onClick={() => removeMilestone(index)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-[#ffb6c1] hover:text-[#f8f0f5]"
                       >
                         Remove
                       </button>
@@ -254,9 +254,9 @@ export default function CreateProject() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">Description *</label>
+                      <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Description *</label>
                       <input 
-                        className="w-full bg-gray-600 text-white px-4 py-3 rounded-lg border border-gray-500 focus:border-blue-500 focus:outline-none" 
+                        className="w-full bg-[#800040] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#99004d] focus:border-[#ff1493] focus:outline-none" 
                         placeholder="e.g., UI Components"
                         value={milestone.description}
                         onChange={(e) => updateMilestone(index, 'description', e.target.value)}
@@ -264,11 +264,11 @@ export default function CreateProject() {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">Amount (ETH) *</label>
+                      <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Amount (ETH) *</label>
                       <input 
                         type="number"
                         step="0.01"
-                        className="w-full bg-gray-600 text-white px-4 py-3 rounded-lg border border-gray-500 focus:border-blue-500 focus:outline-none" 
+                        className="w-full bg-[#800040] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#99004d] focus:border-[#ff1493] focus:outline-none" 
                         placeholder="1.0"
                         value={milestone.amount}
                         onChange={(e) => updateMilestone(index, 'amount', e.target.value)}
@@ -276,10 +276,10 @@ export default function CreateProject() {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-300 text-sm font-medium mb-2">Deadline *</label>
+                      <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Deadline *</label>
                       <input 
                         type="datetime-local"
-                        className="w-full bg-gray-600 text-white px-4 py-3 rounded-lg border border-gray-500 focus:border-blue-500 focus:outline-none" 
+                        className="w-full bg-[#800040] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#99004d] focus:border-[#ff1493] focus:outline-none" 
                         value={milestone.deadline}
                         onChange={(e) => updateMilestone(index, 'deadline', e.target.value)}
                         required
@@ -290,20 +290,20 @@ export default function CreateProject() {
               ))}
 
               {/* Total Amount Display */}
-              <div className="bg-blue-900/20 border border-blue-500 rounded-lg p-4">
+              <div className="bg-[#ff1493] bg-opacity-20 border border-[#ff69b4] rounded-lg p-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Total Project Amount:</span>
-                  <span className="text-green-400 font-bold text-lg">
+                  <span className="text-[#f0d0e0]">Total Project Amount:</span>
+                  <span className="text-[#ff69b4] font-bold text-lg">
                     {milestones.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0).toFixed(2)} ETH
                   </span>
                 </div>
                 <div className="flex justify-between items-center mt-2">
-                  <span className="text-gray-400 text-sm">Platform Fee (3%):</span>
-                  <span className="text-gray-400 text-sm">
+                  <span className="text-[#f0d0e0] text-sm">Platform Fee (3%):</span>
+                  <span className="text-[#f0d0e0] text-sm">
                     {(milestones.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0) * 0.03).toFixed(4)} ETH
                   </span>
                 </div>
-                <div className="flex justify-between items-center mt-2 pt-2 border-t border-blue-500">
+                <div className="flex justify-between items-center mt-2 pt-2 border-t border-[#ff69b4]">
                   <span className="text-white font-medium">Total Required:</span>
                   <span className="text-blue-400 font-bold">
                     {(milestones.reduce((sum, m) => sum + (parseFloat(m.amount) || 0), 0) * 1.03).toFixed(4)} ETH
@@ -317,7 +317,7 @@ export default function CreateProject() {
               <button 
                 type="submit"
                 disabled={isSubmitting || isCreating}
-                className="flex-1 bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
+                className="flex-1 bg-[#ff1493] text-white px-6 py-4 rounded-lg hover:bg-[#cc1076] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
               >
                 {isSubmitting || isCreating ? (
                   <div className="flex items-center justify-center gap-2">
@@ -331,7 +331,7 @@ export default function CreateProject() {
               <button 
                 type="button"
                 onClick={() => router.push('/client')}
-                className="bg-gray-600 text-white px-6 py-4 rounded-lg hover:bg-gray-700 font-medium"
+                className="bg-[#660033] text-[#f8f0f5] px-6 py-4 rounded-lg hover:bg-[#800040] font-medium"
               >
                 Cancel
               </button>

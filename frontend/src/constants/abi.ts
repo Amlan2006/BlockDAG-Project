@@ -141,6 +141,42 @@ export const FreelanceEscrowABI = [
     "outputs": [],
     "stateMutability": "nonpayable"
   },
+  {
+    "type": "function",
+    "name": "rateUser",
+    "inputs": [
+      {"name": "user", "type": "address", "internalType": "address"},
+      {"name": "score", "type": "uint8", "internalType": "uint8"},
+      {"name": "comment", "type": "string", "internalType": "string"}
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getUserRatings",
+    "inputs": [{"name": "user", "type": "address", "internalType": "address"}],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct FreelanceEscrow.Rating[]",
+        "components": [
+          {"name": "score", "type": "uint8", "internalType": "uint8"},
+          {"name": "comment", "type": "string", "internalType": "string"},
+          {"name": "timestamp", "type": "uint256", "internalType": "uint256"}
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserReputation",
+    "inputs": [{"name": "user", "type": "address", "internalType": "address"}],
+    "outputs": [{"name": "", "type": "uint256", "internalType": "uint256"}],
+    "stateMutability": "view"
+  },
   // Events
   {
     "type": "event",
@@ -167,6 +203,15 @@ export const FreelanceEscrowABI = [
     "inputs": [
       {"name": "projectId", "type": "uint256", "indexed": true, "internalType": "uint256"},
       {"name": "freelancer", "type": "address", "indexed": true, "internalType": "address"}
+    ]
+  },
+  {
+    "type": "event",
+    "name": "RatingGiven",
+    "inputs": [
+      {"name": "rater", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "ratee", "type": "address", "indexed": true, "internalType": "address"},
+      {"name": "score", "type": "uint8", "indexed": false, "internalType": "uint8"}
     ]
   }
 ] as const;

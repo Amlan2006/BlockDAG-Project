@@ -73,19 +73,19 @@ export default function ClientDashboard() {
     const { data: milestoneCount } = useMilestoneCount(projectId);
     
     // Debug logging
-    console.log(`Project ${projectId}:`, {
-      projectData,
-      applications,
-      isLoadingApps,
-      appsError
-    });
+    // console.log(`Project ${projectId}:`, {
+    //   projectData,
+    //   applications,
+    //   isLoadingApps,
+    //   appsError
+    // });
     
     if (isLoading || !projectData) {
       return (
-        <div className="bg-gray-800 rounded-lg p-6 animate-pulse">
-          <div className="h-6 bg-gray-700 rounded mb-4"></div>
-          <div className="h-4 bg-gray-700 rounded mb-2"></div>
-          <div className="h-4 bg-gray-700 rounded"></div>
+        <div className="bg-[#4d0026] rounded-lg p-6 animate-pulse border border-[#660033]">
+          <div className="h-6 bg-[#660033] rounded mb-4"></div>
+          <div className="h-4 bg-[#660033] rounded mb-2"></div>
+          <div className="h-4 bg-[#660033] rounded"></div>
         </div>
       );
     }
@@ -100,33 +100,33 @@ export default function ClientDashboard() {
     const hasApplications = Boolean(freelancersArray.length > 0);
     const applicationCount = freelancersArray.length;
     
-    console.log(`Project ${projectId} details:`, {
-      hasFreelancer,
-      hasApplications,
-      applicationCount,
-      freelancersArray: freelancersArray,
-      applicationsStructure: applications ? {
-        freelancers: applications[0],
-        proposals: applications[1],
-        proposedRates: applications[2],
-        appliedAt: applications[3],
-        isAccepted: applications[4]
-      } : null
-    });
+    // console.log(`Project ${projectId} details:`, {
+    //   hasFreelancer,
+    //   hasApplications,
+    //   applicationCount,
+    //   freelancersArray: freelancersArray,
+    //   applicationsStructure: applications ? {
+    //     freelancers: applications[0],
+    //     proposals: applications[1],
+    //     proposedRates: applications[2],
+    //     appliedAt: applications[3],
+    //     isAccepted: applications[4]
+    //   } : null
+    // });
     
     return (
-      <div className="bg-gray-800 rounded-lg p-6">
+      <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h3 className="text-white font-bold text-lg">{description.slice(0, 50)}...</h3>
-            <p className="text-gray-400 text-sm">
+            <h3 className="text-[#f8f0f5] font-bold text-lg">{description.slice(0, 50)}...</h3>
+            <p className="text-[#f0d0e0] text-sm">
               {hasFreelancer ? `Freelancer: ${freelancer.slice(0, 6)}...${freelancer.slice(-4)}` : 'No freelancer assigned'}
             </p>
           </div>
           <span className={`px-3 py-1 rounded-full text-sm ${
             projectStatus === 'Active' ? 'bg-yellow-600' : 
             projectStatus === 'Completed' ? 'bg-green-600' : 
-            projectStatus === 'Cancelled' ? 'bg-red-600' : 'bg-gray-600'
+            projectStatus === 'Cancelled' ? 'bg-red-600' : 'bg-[#660033]'
           } text-white`}>
             {projectStatus}
           </span>
@@ -134,27 +134,27 @@ export default function ClientDashboard() {
         
         <div className="space-y-2 mb-4">
           <div className="flex justify-between">
-            <span className="text-gray-300">Budget:</span>
-            <span className="text-white">{formatEther(totalAmount)} ETH</span>
+            <span className="text-[#f0d0e0]">Budget:</span>
+            <span className="text-[#f8f0f5]">{formatEther(totalAmount)} ETH</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-300">Created:</span>
-            <span className="text-white">{new Date(Number(createdAt) * 1000).toLocaleDateString()}</span>
+            <span className="text-[#f0d0e0]">Created:</span>
+            <span className="text-[#f8f0f5]">{new Date(Number(createdAt) * 1000).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-300">Applications:</span>
-            <span className="text-white">{applicationCount}</span>
+            <span className="text-[#f0d0e0]">Applications:</span>
+            <span className="text-[#f8f0f5]">{applicationCount}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-300">Milestones:</span>
-            <span className="text-white">{milestoneCount?.toString() || '0'}</span>
+            <span className="text-[#f0d0e0]">Milestones:</span>
+            <span className="text-[#f8f0f5]">{milestoneCount?.toString() || '0'}</span>
           </div>
         </div>
 
         <div className="flex gap-2">
           <button 
             onClick={() => setSelectedProject(projectId)}
-            className="flex-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
+            className="flex-1 bg-[#ff1493] text-white px-3 py-2 rounded hover:bg-[#cc1076]"
           >
             View Details
           </button>
@@ -162,9 +162,9 @@ export default function ClientDashboard() {
           {/* Applications Button */}
           <button 
             onClick={() => {
-              console.log('View Applications clicked for project:', projectId);
-              console.log('Current state:', { hasFreelancer, hasApplications, applicationCount });
-              console.log('Applications data structure:', applications);
+              // console.log('View Applications clicked for project:', projectId);
+              // console.log('Current state:', { hasFreelancer, hasApplications, applicationCount });
+              // console.log('Applications data structure:', applications);
               if (hasApplications) {
                 router.push(`/applications/${projectId}`);
               } else {
@@ -173,8 +173,8 @@ export default function ClientDashboard() {
             }}
             className={`flex-1 text-white px-3 py-2 rounded ${
               !hasFreelancer && hasApplications 
-                ? 'bg-green-600 hover:bg-green-700' 
-                : 'bg-gray-600'
+                ? 'bg-[#ff69b4] hover:bg-[#ff1493]' 
+                : 'bg-[#33001a]'
             }`}
             disabled={hasFreelancer}
           >
@@ -190,7 +190,7 @@ export default function ClientDashboard() {
           {hasFreelancer && (
             <button 
               onClick={() => router.push(`/client-milestones/${projectId}`)}
-              className="flex-1 bg-purple-600 text-white px-3 py-2 rounded hover:bg-purple-700"
+              className="flex-1 bg-[#cc1076] text-white px-3 py-2 rounded hover:bg-[#ff1493]"
             >
               Manage Milestones
             </button>
@@ -210,31 +210,31 @@ export default function ClientDashboard() {
       <div className="space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-600 rounded-lg p-4">
-            <h3 className="text-white text-sm font-medium">Total Projects</h3>
-            <p className="text-white text-2xl font-bold">{projectIds?.length || 0}</p>
+          <div className="bg-[#ff1493] rounded-lg p-4">
+            <h3 className="text-[#f8f0f5] text-sm font-medium">Total Projects</h3>
+            <p className="text-[#f8f0f5] text-2xl font-bold">{projectIds?.length || 0}</p>
           </div>
-          <div className="bg-green-600 rounded-lg p-4">
-            <h3 className="text-white text-sm font-medium">Active Projects</h3>
-            <p className="text-white text-2xl font-bold">{activeProjects}</p>
+          <div className="bg-[#ff69b4] rounded-lg p-4">
+            <h3 className="text-[#f8f0f5] text-sm font-medium">Active Projects</h3>
+            <p className="text-[#f8f0f5] text-2xl font-bold">{activeProjects}</p>
           </div>
-          <div className="bg-yellow-600 rounded-lg p-4">
-            <h3 className="text-white text-sm font-medium">Total Spent</h3>
-            <p className="text-white text-2xl font-bold">-- ETH</p>
+          <div className="bg-[#ffb6c1] rounded-lg p-4">
+            <h3 className="text-[#1a000d] text-sm font-medium">Total Spent</h3>
+            <p className="text-[#1a000d] text-2xl font-bold">-- ETH</p>
           </div>
-          <div className="bg-purple-600 rounded-lg p-4">
-            <h3 className="text-white text-sm font-medium">Avg Rating Given</h3>
-            <p className="text-white text-2xl font-bold">-- ⭐</p>
+          <div className="bg-[#cc1076] rounded-lg p-4">
+            <h3 className="text-[#f8f0f5] text-sm font-medium">Avg Rating Given</h3>
+            <p className="text-[#f8f0f5] text-2xl font-bold">-- ⭐</p>
           </div>
         </div>
 
         {/* Recent Projects */}
-        <div className="bg-gray-800 rounded-lg p-6">
-          <h2 className="text-xl font-bold text-white mb-4">Recent Projects</h2>
+        <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
+          <h2 className="text-xl font-bold text-[#f8f0f5] mb-4">Recent Projects</h2>
           {isLoadingProjects ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-400">Loading projects...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
+              <p className="text-[#f0d0e0]">Loading projects...</p>
             </div>
           ) : projectIds && projectIds.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -244,10 +244,10 @@ export default function ClientDashboard() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-gray-400 mb-4">No projects yet</p>
+              <p className="text-[#f0d0e0] mb-4">No projects yet</p>
               <button 
                 onClick={() => router.push('/create-project')}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+                className="bg-[#ff1493] text-white px-6 py-3 rounded-lg hover:bg-[#cc1076]"
               >
                 Create Your First Project
               </button>
@@ -258,13 +258,13 @@ export default function ClientDashboard() {
     );
   };
 
-  const MyProjects = () => (
+  const Projects = () => (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">My Projects</h2>
+        <h2 className="text-2xl font-bold text-[#f8f0f5]">My Projects</h2>
         <button 
           onClick={() => router.push('/create-project')}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className="bg-[#ff1493] text-white px-4 py-2 rounded-lg hover:bg-[#cc1076]"
         >
           + New Project
         </button>
@@ -272,8 +272,8 @@ export default function ClientDashboard() {
 
       {isLoadingProjects ? (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading your projects...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
+          <p className="text-[#f0d0e0]">Loading your projects...</p>
         </div>
       ) : projectIds && projectIds.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -283,11 +283,11 @@ export default function ClientDashboard() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <h3 className="text-white text-xl font-bold mb-2">No Projects Yet</h3>
-          <p className="text-gray-400 mb-6">Create your first project to start hiring freelancers</p>
+          <h3 className="text-[#f8f0f5] text-xl font-bold mb-2">No Projects Yet</h3>
+          <p className="text-[#f0d0e0] mb-6">Create your first project to start hiring freelancers</p>
           <button 
             onClick={() => router.push('/create-project')}
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700"
+            className="bg-[#ff1493] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#cc1076]"
           >
             Create Your First Project
           </button>
@@ -296,19 +296,19 @@ export default function ClientDashboard() {
     </div>
   );
 
-  const Payments = () => (
-    <div className="bg-gray-800 rounded-lg p-6">
-      <h2 className="text-xl font-bold text-white mb-4">Payment History</h2>
-      <p className="text-gray-400">Payment tracking functionality will be implemented based on project milestone data...</p>
+  const CreateProject = () => (
+    <div className="bg-[#4d0026] rounded-lg p-6 border border-[#660033]">
+      <h2 className="text-xl font-bold text-[#f8f0f5] mb-4">Create New Project</h2>
+      <p className="text-[#f0d0e0]">Project creation functionality will be implemented here...</p>
     </div>
   );
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
-          <p className="text-gray-400">Please connect your wallet to access the client dashboard.</p>
+          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
+          <p className="text-[#f0d0e0]">Please connect your wallet to access the client dashboard.</p>
         </div>
       </div>
     );
@@ -316,10 +316,10 @@ export default function ClientDashboard() {
 
   if (isCheckingClient) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Verifying client status...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
+          <p className="text-[#f0d0e0]">Verifying client status...</p>
         </div>
       </div>
     );
@@ -327,13 +327,13 @@ export default function ClientDashboard() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
-          <p className="text-gray-400 mb-6">You must be registered as a client to access this dashboard.</p>
+          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Access Denied</h1>
+          <p className="text-[#f0d0e0] mb-6">You must be registered as a client to access this dashboard.</p>
           <button 
             onClick={() => router.push('/')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+            className="bg-[#ff1493] text-white px-6 py-3 rounded-lg hover:bg-[#cc1076]"
           >
             Go Back to Home
           </button>
@@ -343,19 +343,19 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070E1B] p-6">
+    <div className="min-h-screen bg-[#1a000d] p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">Client Dashboard</h1>
-            <p className="text-gray-400">Welcome back! Manage your projects and find talented freelancers.</p>
+            <h1 className="text-3xl font-bold text-[#f8f0f5]">Client Dashboard</h1>
+            <p className="text-[#f0d0e0]">Manage your projects and freelancers</p>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-white">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
+            <span className="text-[#f8f0f5]">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
             <button 
               onClick={() => router.push('/')}
-              className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+              className="bg-[#ff1493] text-white px-4 py-2 rounded hover:bg-[#cc1076]"
             >
               Back to Home
             </button>
@@ -366,16 +366,16 @@ export default function ClientDashboard() {
         <div className="flex space-x-4 mb-6">
           {[
             { id: 'overview', label: '📊 Overview' },
-            { id: 'projects', label: '📋 My Projects' },
-            { id: 'payments', label: '💰 Payments' },
+            { id: 'projects', label: '💼 My Projects' },
+            { id: 'create', label: '➕ Create Project' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 rounded-lg font-semibold ${
                 activeTab === tab.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  ? 'bg-[#ff1493] text-white'
+                  : 'bg-[#4d0026] text-[#f8f0f5] hover:bg-[#660033]'
               }`}
             >
               {tab.label}
@@ -385,9 +385,17 @@ export default function ClientDashboard() {
 
         {/* Tab Content */}
         {activeTab === 'overview' && <Overview />}
-        {activeTab === 'projects' && <MyProjects />}
-        {activeTab === 'payments' && <Payments />}
+        {activeTab === 'projects' && <Projects />}
+        {activeTab === 'create' && <CreateProject />}
       </div>
+      
+      {/* Project Detail Modal */}
+      {selectedProject !== null && (
+        <ProjectDetailModal 
+          projectId={selectedProject} 
+          onClose={() => setSelectedProject(null)} 
+        />
+      )}
     </div>
   );
 }

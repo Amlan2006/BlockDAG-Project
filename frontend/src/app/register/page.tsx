@@ -120,13 +120,13 @@ export default function Register() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Connect Your Wallet</h1>
-          <p className="text-gray-400 mb-6">Please connect your wallet to register on FreelanceDAO.</p>
+          <h1 className="text-2xl font-bold text-[#f8f0f5] mb-4">Connect Your Wallet</h1>
+          <p className="text-[#f0d0e0] mb-6">Please connect your wallet to register on FreelanceDAO.</p>
           <button 
             onClick={() => router.push('/')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+            className="bg-[#ff1493] text-white px-6 py-3 rounded-lg hover:bg-[#cc1076]"
           >
             Go Back to Home
           </button>
@@ -137,16 +137,16 @@ export default function Register() {
   
   if (isCheckingRegistration || (isSubmitting && isConfirming)) {
     return (
-      <div className="min-h-screen bg-[#070E1B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1a000d] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff1493] mx-auto mb-4"></div>
+          <p className="text-[#f0d0e0]">
             {isCheckingRegistration ? 'Checking registration status...' : 
              isSubmitting && isConfirming ? 'Confirming transaction...' : 
              'Processing registration...'}
           </p>
           {txHash && (
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-[#f0d0e0] mt-2">
               Transaction: {txHash.slice(0, 10)}...{txHash.slice(-8)}
             </p>
           )}
@@ -156,15 +156,15 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070E1B] p-6">
+    <div className="min-h-screen bg-[#1a000d] p-6">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-4">Join FreelanceDAO</h1>
-          <p className="text-gray-400">Create your profile and start your decentralized freelancing journey</p>
-          <p className="text-sm text-gray-500 mt-2">Wallet: {address}</p>
+          <h1 className="text-3xl font-bold text-[#f8f0f5] mb-4">Join FreelanceDAO</h1>
+          <p className="text-[#f0d0e0]">Create your profile and start your decentralized freelancing journey</p>
+          <p className="text-sm text-[#f0d0e0] mt-2">Wallet: {address}</p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg p-8">
+        <div className="bg-[#4d0026] rounded-lg p-8 border border-[#660033]">
           <form onSubmit={handleSubmit} className="space-y-8">
             {error && (
               <div className="bg-red-600/20 border border-red-600 rounded-lg p-4">
@@ -179,44 +179,44 @@ export default function Register() {
             )}
             {/* User Type Selection */}
             <div>
-              <label className="block text-gray-300 text-lg font-medium mb-4">I want to join as:</label>
+              <label className="block text-[#f0d0e0] text-lg font-medium mb-4">I want to join as:</label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div 
                   className={`p-6 rounded-lg border-2 cursor-pointer transition-all ${
-                    userType === 'client' ? 'border-blue-500 bg-blue-900/20' : 'border-gray-600 bg-gray-700'
+                    userType === 'client' ? 'border-[#ff1493] bg-[#ff1493]/20' : 'border-[#660033] bg-[#660033]'
                   }`}
                   onClick={() => setUserType('client')}
                 >
                   <div className="text-center">
                     <div className="text-4xl mb-2">👔</div>
-                    <h3 className="text-white font-bold">Client</h3>
-                    <p className="text-gray-400 text-sm mt-2">I want to hire talented freelancers for my projects</p>
+                    <h3 className="text-[#f8f0f5] font-bold">Client</h3>
+                    <p className="text-[#f0d0e0] text-sm mt-2">I want to hire talented freelancers for my projects</p>
                   </div>
                 </div>
                 
                 <div 
                   className={`p-6 rounded-lg border-2 cursor-pointer transition-all ${
-                    userType === 'freelancer' ? 'border-green-500 bg-green-900/20' : 'border-gray-600 bg-gray-700'
+                    userType === 'freelancer' ? 'border-[#ff69b4] bg-[#ff69b4]/20' : 'border-[#660033] bg-[#660033]'
                   }`}
                   onClick={() => setUserType('freelancer')}
                 >
                   <div className="text-center">
                     <div className="text-4xl mb-2">💻</div>
-                    <h3 className="text-white font-bold">Freelancer</h3>
-                    <p className="text-gray-400 text-sm mt-2">I want to offer my skills and work on exciting projects</p>
+                    <h3 className="text-[#f8f0f5] font-bold">Freelancer</h3>
+                    <p className="text-[#f0d0e0] text-sm mt-2">I want to offer my skills and work on exciting projects</p>
                   </div>
                 </div>
                 
                 <div 
                   className={`p-6 rounded-lg border-2 cursor-pointer transition-all ${
-                    userType === 'both' ? 'border-purple-500 bg-purple-900/20' : 'border-gray-600 bg-gray-700'
+                    userType === 'both' ? 'border-[#ffb6c1] bg-[#ffb6c1]/20' : 'border-[#660033] bg-[#660033]'
                   }`}
                   onClick={() => setUserType('both')}
                 >
                   <div className="text-center">
                     <div className="text-4xl mb-2">⚡</div>
-                    <h3 className="text-white font-bold">Both</h3>
-                    <p className="text-gray-400 text-sm mt-2">I want to both hire freelancers and offer my services</p>
+                    <h3 className="text-[#f8f0f5] font-bold">Both</h3>
+                    <p className="text-[#f0d0e0] text-sm mt-2">I want to both hire freelancers and offer my services</p>
                   </div>
                 </div>
               </div>
@@ -227,9 +227,9 @@ export default function Register() {
                 {/* Basic Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">Full Name *</label>
+                    <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Full Name *</label>
                     <input 
-                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                      className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                       placeholder="Enter your full name"
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -237,10 +237,10 @@ export default function Register() {
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">Email Address *</label>
+                    <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Email Address *</label>
                     <input 
                       type="email"
-                      className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                      className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                       placeholder="Enter your email"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -251,11 +251,11 @@ export default function Register() {
 
                 {/* Bio */}
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">
+                  <label className="block text-[#f0d0e0] text-sm font-medium mb-2">
                     Bio {userType === 'freelancer' || userType === 'both' ? '*' : ''}
                   </label>
                   <textarea 
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                    className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                     rows={4}
                     placeholder={userType === 'freelancer' ? "Tell clients about your experience and expertise..." : "Tell us about yourself and your business..."}
                     value={formData.bio}
@@ -267,10 +267,10 @@ export default function Register() {
                 {/* Skills (for freelancers) */}
                 {(userType === 'freelancer' || userType === 'both') && (
                   <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">Skills *</label>
+                    <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Skills *</label>
                     <div className="flex gap-2 mb-3">
                       <input 
-                        className="flex-1 bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                        className="flex-1 bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                         placeholder="Add a skill (e.g., React, Solidity, UI/UX)"
                         value={currentSkill}
                         onChange={(e) => setCurrentSkill(e.target.value)}
@@ -284,7 +284,7 @@ export default function Register() {
                       <button 
                         type="button"
                         onClick={handleSkillAdd}
-                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+                        className="bg-[#ff1493] text-white px-6 py-3 rounded-lg hover:bg-[#cc1076]"
                       >
                         Add
                       </button>
@@ -292,12 +292,12 @@ export default function Register() {
                     {formData.skills.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {formData.skills.map((skill, index) => (
-                          <span key={index} className="bg-blue-600 text-white px-3 py-1 rounded-full flex items-center gap-2">
+                          <span key={index} className="bg-[#ff1493] text-white px-3 py-1 rounded-full flex items-center gap-2">
                             {skill}
                             <button 
                               type="button"
                               onClick={() => handleSkillRemove(skill)}
-                              className="text-red-300 hover:text-red-100"
+                              className="text-[#ffb6c1] hover:text-[#f8f0f5]"
                             >
                               ×
                             </button>
@@ -310,21 +310,21 @@ export default function Register() {
 
                 {/* Profile Image */}
                 <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2">Profile Image (optional)</label>
+                  <label className="block text-[#f0d0e0] text-sm font-medium mb-2">Profile Image (optional)</label>
                   <input 
-                    className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none" 
+                    className="w-full bg-[#660033] text-[#f8f0f5] px-4 py-3 rounded-lg border border-[#800040] focus:border-[#ff1493] focus:outline-none" 
                     placeholder="IPFS hash or image URL"
                     value={formData.profileImage}
                     onChange={(e) => setFormData({...formData, profileImage: e.target.value})}
                   />
-                  <p className="text-gray-500 text-sm mt-1">Upload your image to IPFS and paste the hash here</p>
+                  <p className="text-[#f0d0e0] text-sm mt-1">Upload your image to IPFS and paste the hash here</p>
                 </div>
 
                 {/* Terms and Submit */}
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <input type="checkbox" required className="mt-1" />
-                    <label className="text-gray-300 text-sm">
+                    <label className="text-[#f0d0e0] text-sm">
                       I agree to the FreelanceDAO Terms of Service and Privacy Policy. I understand that my profile information will be stored on-chain and publicly visible.
                     </label>
                   </div>
@@ -332,7 +332,7 @@ export default function Register() {
                   <button 
                     type="submit"
                     disabled={isSubmitting || isRegistering || !userType || !formData.name || !formData.email || ((userType === 'freelancer' || userType === 'both') && formData.skills.length === 0)}
-                    className="w-full bg-blue-600 text-white px-6 py-4 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
+                    className="w-full bg-[#ff1493] text-white px-6 py-4 rounded-lg hover:bg-[#cc1076] disabled:opacity-50 disabled:cursor-not-allowed font-medium text-lg"
                   >
                     {isSubmitting || isRegistering ? (
                       <div className="flex items-center justify-center gap-2">
@@ -351,20 +351,20 @@ export default function Register() {
 
         {/* Benefits Section */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gray-800 rounded-lg p-6 text-center">
+          <div className="bg-[#4d0026] rounded-lg p-6 text-center border border-[#660033]">
             <div className="text-3xl mb-3">🔒</div>
-            <h3 className="text-white font-bold mb-2">Secure Payments</h3>
-            <p className="text-gray-400 text-sm">All payments are secured by smart contracts with milestone-based releases</p>
+            <h3 className="text-[#f8f0f5] font-bold mb-2">Secure Payments</h3>
+            <p className="text-[#f0d0e0] text-sm">All payments are secured by smart contracts with milestone-based releases</p>
           </div>
-          <div className="bg-gray-800 rounded-lg p-6 text-center">
+          <div className="bg-[#4d0026] rounded-lg p-6 text-center border border-[#660033]">
             <div className="text-3xl mb-3">⚡</div>
-            <h3 className="text-white font-bold mb-2">Fast Transactions</h3>
-            <p className="text-gray-400 text-sm">Leverage BlockDAG's speed for instant payments and low fees</p>
+            <h3 className="text-[#f8f0f5] font-bold mb-2">Fast Transactions</h3>
+            <p className="text-[#f0d0e0] text-sm">Leverage BlockDAG's speed for instant payments and low fees</p>
           </div>
-          <div className="bg-gray-800 rounded-lg p-6 text-center">
+          <div className="bg-[#4d0026] rounded-lg p-6 text-center border border-[#660033]">
             <div className="text-3xl mb-3">🌟</div>
-            <h3 className="text-white font-bold mb-2">Reputation System</h3>
-            <p className="text-gray-400 text-sm">Build your on-chain reputation that follows you everywhere</p>
+            <h3 className="text-[#f8f0f5] font-bold mb-2">Reputation System</h3>
+            <p className="text-[#f0d0e0] text-sm">Build your on-chain reputation that follows you everywhere</p>
           </div>
         </div>
       </div>
